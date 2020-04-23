@@ -26,7 +26,8 @@
                 if (strlen($stu_id) === 7 && is_numeric($stu_id)) {
                     // generate the tmp file for cookies, this stays with the client
                     $tmp_folder = $config['general']['tmp_directory'];
-                    $tmp_file_path = tempnam('../' . $tmp_folder, 'borealis-');
+                    $tmp_prefix = $config['general']['tmp_prefix'];
+                    $tmp_file_path = tempnam('../' . $tmp_folder, $tmp_prefix . '-');
 
                     // read the main banner url and create curl instance
                     $main_url = $config['general']['main_url'];
