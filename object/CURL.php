@@ -1,22 +1,17 @@
 <?php
     class CURL {
         private $main_url;
-
-        private $tmpFile;
-        private $tmpFilePath;
-
+        private $tmp_file_path;
         private $curl;
 
-        public function __construct($main_url) {
+        public function __construct($main_url, $tmp_file_path) {
             $this->main_url = $main_url;
-
-            $this->tmpFile = tmpfile();
-            $this->tmpFilePath = stream_get_meta_data($this->tmpFile)['uri'];
+            $this->tmp_file_path = $tmp_file_path;
 
             $this->curl = curl_init();
-
-            curl_setopt($this->curl, CURLOPT_COOKIEJAR, $this->tmpFilePath);
-            curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->tmpFilePath);
+            
+            curl_setopt($this->curl, CURLOPT_COOKIEJAR, $this->tmp_file_path);
+            curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->tmp_file_path);
             curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($this->curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246');
         }

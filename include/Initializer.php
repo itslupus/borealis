@@ -33,7 +33,7 @@
         public function verify_session() {
             $this->start_session();
 
-            if (!isset($_SESSION['curl'])) {
+            if (!isset($_SESSION['session_file'])) {
                 throw new InitializerInvalidSession();
             }
         }

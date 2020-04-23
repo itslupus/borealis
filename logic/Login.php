@@ -24,10 +24,13 @@
             if (isset($stu_id) && isset($password)) {
                 // verify student id length and type
                 if (strlen($stu_id) === 7 && is_numeric($stu_id)) {
+                    // generate the tmp file for cookies, this stays with the client
+                    $tmp_folder = $config['general']['tmp_directory'];
+                    $tmp_file_path = tempnam('../' . $tmp_folder, 'borealis-');
+
                     // read the main banner url and create curl instance
-                    // if we can log on fine, this curl instance will be saved in $_SESSION
                     $main_url = $config['general']['main_url'];
-                    $curl = new CURL($main_url);
+                    $curl = new CURL($main_url, $tmp_file_path);
                     
                     // init the page and initial session cookie from aurora
                     $curl->get_page('/banprod/twbkwbis.P_WWWLogin');
@@ -35,17 +38,26 @@
                     // login
                     $post_params = array('sid' => $stu_id, 'PIN' => $password);
                     $curl->set_post($post_params);
-                    $response = $curl->get_page('/banprod/twbkwbis.P_WWWLogin');
+                    $response = $curl->get_page('/banprod/twbkwbis.P_ValLogin');
 
+                    // response size of < 500 bytes indicates login success
                     $response_size = $curl->get_downloaded_size();
                     if ($response_size < 500) {
-                        $_SESSION['curl'] = $curl;
-                        $_SESSION['pages']['P_MainMnu'] = new Page($response);
+                        $_SESSION['session_file'] = $tmp_file_path;
+
+                        // replace the + from the url encoded form
+                        $parsed_response = str_replace('+', ' ', $response);
+
+                        // find the name of the client and save it since we have it on hand
+                        $match;
+                        preg_match("/(?<=Welcome, ).*(?=, to)/", $parsed_response, $match);
+                        $_SESSION['name'] = $match[0];
 
                         header('Location: /home.php');
                         die();
                     } else {
                         // invalid id/password
+                        unlink($tmp_file_path);
                     }
                 } else {
                     // invalid student id format
