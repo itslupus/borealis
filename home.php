@@ -11,13 +11,11 @@
 
         $init->verify_session();
 
-        header('Location: /home.php');
-        die();
+        $vm->render('home.php', true);
     } catch (InitializerConfigInvalid $e) {
         die('> invalid config');
     } catch (InitializerInvalidSession $e) {
-        echo('> no session');
-
-        $vm->render('index.php', true);
+        header('Location: /');
+        die();
     }
 ?>
