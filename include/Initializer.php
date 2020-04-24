@@ -1,5 +1,26 @@
 <?php
     class Initializer {
+        public function __construct() {
+            // $this->clean_tmp_files();
+        }
+
+        public function clean_tmp_files() {
+            $files = scandir('../tmp');
+            $prefix = 'borealis';
+
+            foreach ($files as $file) {
+                if (substr($file, 0, strlen($prefix)) !== $prefix) {
+                    continue;
+                }
+
+                $file_path = '../tmp/' . $file;
+                $mod_time = filemtime($file_path);
+                if ($mod_time + 1440 <= time()) {
+                    unlink($file_path);
+                }
+            }
+        }
+
         /*********************************
          * Reads the configuration file
          * 

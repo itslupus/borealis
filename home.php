@@ -29,9 +29,31 @@
     $response = $curl->get_page('/banprod/bwskfshd.P_CrseSchdDetl');
 
     $crse_page = new Page($response);
-    $el = $crse_page->get_elements_by_class('div', 'datadisplaytable');
+    $tables = $crse_page->get_elements_by_class('table', 'datadisplaytable');
+
+    $courses = array();
+    for ($i = 0; $i < $tables->length; $i += 2) {
+        $details = array();
+
+        $course_info = $tables->item($i);
+        $course_times = $tables->item($i + 1);
+
+        $course_name = $crse_page->get_elements_by_tag('caption', $course_info);
+
+        $course_info_detail = $crse_page->get_elements_by_tag('td', $course_info);
+        $course_instr_name = trim($course_info_detail->item(3)->textContent);
+
+        array_push($details, $course_instr_name);
+
+        $meet_time_els = $crse_page->get_last_elements('td', $course_times);
+        foreach ($meet_time_els as $el) {
+            array_push($details, $el->textContent);
+        }
+
+        $courses[$course_name->item(0)->textContent] = $details;
+    }
 
     $vm->name = $_SESSION['name'];
-    $vm->el = $el->length;
+    $vm->courses = $courses;
     $vm->render('home.php', true);
 ?>
