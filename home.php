@@ -28,7 +28,7 @@
     // fetch course information for winter 2020 term
     //        AAAABB
     // year --^^^^
-    //            ^^-- term (90 => fall, 10 => winter, 40 => spring/summer)
+    //            ^^-- term (90 => fall, 10 => winter, 50 => spring/summer)
     $post_params = array('term_in' => 202010);
     $curl->set_post($post_params);
     $response = $curl->get_page('/banprod/bwskfshd.P_CrseSchdDetl');
