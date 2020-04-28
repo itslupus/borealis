@@ -39,6 +39,18 @@
             return $elements;
         }
 
+        public function get_elements_by_attr_val($tag, $attr, $val, $relative = null) {
+            $elements;
+
+            if ($relative !== null) {
+                $elements = $this->xpath_obj->query('.//' . $tag . '[contains(@' . $attr . ', \'' . $val . '\')]', $relative);
+            } else {
+                $elements = $this->xpath_obj->query('//' . $tag . '[contains(@' . $attr . ', \'' . $val . '\')]');
+            }
+
+            return $elements;
+        }
+
         public function get_last_elements($tag, $relative = null) {
             $last_els;
 

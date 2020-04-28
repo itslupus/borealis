@@ -1,5 +1,6 @@
 <?php
-    require_once('../object/CURL.php');
+    require_once(__DIR__ . '/../object/CURL.php');
+    require_once(__DIR__ . '/../object/Page.php');
 
     class Initializer {
         private $config_data;
@@ -67,10 +68,28 @@
                 throw new InitializerInvalidSession();
             }
 
-            $curl = new CURL()
+            $main_url = $this->config_data['general']['main_url'];
+            $session_file = $_SESSION['session_file'];
+
+            $curl = new CURL($main_url, $session_file);
+            $response = $curl->get_page('/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu');
+
+            $page = new Page($response);
+            $result = $page->get_elements_by_attr_val('form', 'name', 'loginform');
+            
+            if (isset($result) && $result->length == 1) {
+                // make sure to destory session first
+                $this->destroy_session();
+
+                throw new InitializerInvalidSession();
+            }
         }
 
         public function destroy_session() {
+            if (isset($_SESSION['session_file'])) {
+                unlink($_SESSION['session_file']);
+            }
+
             $_SESSION = array();
             session_destroy();
         }

@@ -1,9 +1,6 @@
 <?php
     require_once('../include/Initializer.php');
 
-    // note that this will not destroy sessions that ended due to inactivity
-    unlink($_SESSION['session_file']);
-
     $init;
     try {
         $init = new Initializer();

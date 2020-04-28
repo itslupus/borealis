@@ -13,7 +13,7 @@
         public function __construct() {
             $init = new Initializer();
 
-            $config = $init->read_config();
+            $config = $init->get_config();
             $this->view_path = $config['general']['current_view'];
         }
 
