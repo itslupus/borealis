@@ -8,7 +8,7 @@
     try {
         $init = new Initializer();
 
-        $config = $init->read_config();
+        $config = $init->get_config();
         $init->verify_session();
 
         header('Location: /home.php');

@@ -12,7 +12,7 @@
         $init = new Initializer();
         $vm = new ViewManager();
 
-        $config = $init->read_config();
+        $config = $init->get_config();
         $init->verify_session();
     } catch (InitializerConfigInvalid $e) {
         die('> invalid config');
