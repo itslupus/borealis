@@ -8,7 +8,6 @@
         /*********************************
          * Create the initializer by reading in config
          * 
-         * @returns returns a dictionary of config entries
          * @throws  InitializerConfigInvalid if config file contains invalid/missing keys
          */
         public function __construct() {
