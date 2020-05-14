@@ -71,12 +71,12 @@
             $session_file = $_SESSION['session_file'];
 
             $curl = new CURL($main_url, $session_file);
-            $response = $curl->get_page('/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu');
+            $response = $curl->get_page('/banprod/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu');
 
             $page = new Page($response);
-            $result = $page->get_elements_by_attr_val('form', 'name', 'loginform');
+            $result = $page->query('//form[contains(@name, "loginform")]');
             
-            if (isset($result) && $result->length == 1) {
+            if (isset($result) && $result->length === 1) {
                 // make sure to destory session first
                 $this->destroy_session();
 

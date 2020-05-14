@@ -16,8 +16,6 @@
     } catch (InitializerConfigInvalid $e) {
         die('> invalid config');
     } catch (InitializerInvalidSession $e) {
-        echo('> no session');
-
         $vm->render('index.php', true);
     }
 ?>

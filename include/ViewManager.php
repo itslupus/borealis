@@ -50,18 +50,27 @@
 
                 echo('<html>');
 
+                // include the <head>
                 if ($include_extra && file_exists($this->view_path . '/head.php')) {
                     require_once($this->view_path . '/head.php');
                 }
 
+                // start body layout
                 echo('<body>');
-                require_once($this->view_path . '/' . $file);
-                echo('</body>');
+                // include the navigation
+                require_once($this->view_path . '/navigation.php');
 
+                // include the main content
+                echo('<main>');
+                require_once($this->view_path . '/' . $file);
+                echo('</main>');
+
+                // include the <footer>
                 if ($include_extra && file_exists($this->view_path . '/footer.php')) {
                     require_once($this->view_path . '/footer.php');
                 }
-
+                
+                echo('</body>');
                 echo('</html>');
             }
 
