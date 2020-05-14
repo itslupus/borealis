@@ -75,6 +75,24 @@
                                     let list_item = document.createElement('li');
                                     list_item.setAttribute('course', key);
                                     list_item.textContent = crse[key];
+
+                                    list_item.addEventListener('click', (evnt) => {
+                                        let el = evnt.target;
+
+                                        let form = document.getElementById('search');
+
+                                        let input = document.createElement('input');
+                                        input.setAttribute('type', 'hidden');
+                                        input.setAttribute('name', 'courses[]');
+                                        input.setAttribute('value', el.getAttribute('course'));
+
+                                        document.getElementById('input').value = '';
+                                        document.getElementById('input-result-list').innerHTML = '';
+
+                                        form.appendChild(input);
+                                        document.getElementById('input-result').textContent += el.textContent + ' | ';
+                                    });
+
                                     list.appendChild(list_item);
                                 });
                             }
@@ -97,7 +115,7 @@
 <p>search page</p>
 <?php if($method === 'GET'){ ?>
     <input id = 'input' name = 'search' type = 'text' placeholder = 'course' autocomplete = 'off'></input><br>
-    <p id = 'input-result'></p>
+    <p id = 'input-result'></p><br>
     <div id = 'input-result-list'></div>
     <form id = search action = 'search.php' method = POST autocomplete = off>
         <input type = submit value = go>
@@ -106,13 +124,6 @@
                 <option value = '<?=$term?>'><?=$term?></option>
             <?php } ?>
         </select>
-        <?php foreach($courses as $id=>$name){ ?>
-            <div>
-                <input type = checkbox id = <?=$id?> name = courses[] value = <?=$id?>>
-                <span><?=$name?></span>
-            </div>
-        <?php } ?>
-        <input type = submit value = go>
     </form>
 <?php }else{ ?>
     <?php foreach($query_data as $k=>$subj){ ?>
