@@ -22,14 +22,5 @@
         die();
     }
 
-    $courses = fetch_week($config, $_SESSION['term']);
-    $summary = fetch_acc_summary($config);
-
-    $vm->name = $_SESSION['name'];
-    $vm->courses = $courses;
-
-    $vm->summary_total = $summary->get_total_amnt();
-    $vm->summary_details = $summary->get_details();
-
-    $vm->render('home.php', true);
+    $vm->render('week.php', true);
 ?>

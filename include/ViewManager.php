@@ -36,11 +36,27 @@
             return $this->output[$k];
         }
 
+        public function render_head() {
+            if (file_exists($this->view_path . '/head.php')) {
+                require_once($this->view_path . '/head.php');
+            }
+        }
+
+        public function render_navigation() {
+            require_once($this->view_path . '/navigation.php');
+        }
+
+        public function render_footer() {
+            if (file_exists($this->view_path . '/footer.php')) {
+                require_once($this->view_path . '/footer.php');
+            }
+        }
+
         /*********************************
          * Renders the given file with output
          * 
          * @param any $file the body file to render
-         * @param any $include_extra set to true to also include <head> and <footer>
+         * @param any $include_extra set to true to also include <head>, <footer> and the navigation links
          */
         public function render($file, $include_extra) {
             ob_start();
@@ -50,27 +66,22 @@
 
                 echo('<html>');
 
-                // include the <head>
-                if ($include_extra && file_exists($this->view_path . '/head.php')) {
-                    require_once($this->view_path . '/head.php');
-                }
+                $this->render_head();
 
                 // start body layout
                 echo('<body>');
-                // include the navigation
-                require_once($this->view_path . '/navigation.php');
+
+                $this->render_navigation();
 
                 // include the main content
                 echo('<main>');
                 require_once($this->view_path . '/' . $file);
                 echo('</main>');
 
-                // include the <footer>
-                if ($include_extra && file_exists($this->view_path . '/footer.php')) {
-                    require_once($this->view_path . '/footer.php');
-                }
-                
                 echo('</body>');
+
+                $this->render_footer();
+                
                 echo('</html>');
             }
 

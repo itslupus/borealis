@@ -18,7 +18,7 @@
         $init = new Initializer();
 
         $config = $init->get_config();
-        $init->verify_session();
+        // $init->verify_session();
     } catch (InitializerConfigInvalid $e) {
         // server error, invalid config
         http_response_code(500);

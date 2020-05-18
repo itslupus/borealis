@@ -14,3 +14,19 @@
         <?php } ?>
     </div>
 </div>
+<br>
+<div class = 'dropdown'>
+    <div class = 'dropdown-header padded'>fees</div>
+    <div class = 'dropdown-content'>
+        <p>summary: <?=$summary_total?></p>
+        <table border = 1>
+            <?php foreach($summary_details as $detail){ ?>
+                <tr>
+                    <td><?=$detail->get_name()?></td>
+                    <td><?=$detail->get_amnt()?></td>
+                    <td>-<?=$detail->get_amnt_paid()?></td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
+</div>
