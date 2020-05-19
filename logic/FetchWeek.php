@@ -1,6 +1,8 @@
 <?php
     require_once('object/CURL.php');
     require_once('object/Page.php');
+    require_once('object/Course.php');
+    require_once('object/CourseMeetTime.php');
 
     // fetch course information for winter 2020 term
     //        AAAABB
@@ -19,31 +21,52 @@
         $crse_page = new Page($response);
         $tables = $crse_page->query('//table[@class = "datadisplaytable"]');
 
-        // these are pairs of tables
-        // first one contains course info, second one contains meet times
+        // return array of courses
         $courses = array();
-        for ($i = 0; $i < $tables->length; $i += 2) {
+        for ($i = 2; $i < $tables->length; $i += 2) {
+            $course_new = new Course();
+
             $details = array();
 
             $course_info = $tables->item($i);
             $course_times = $tables->item($i + 1);
 
-            // get course name from first table
-            $course_name = $crse_page->query('.//caption', $course_info);
+            // get course name and details from first table
+            $course_name_full = $crse_page->query('.//caption', $course_info)->item(0);
+            $split = explode(' - ', trim($course_name_full->textContent));
+            $subj_info = explode(' ', $split[1]);
 
+            $course_new->set_name($split[0]);
+            $course_new->set_subj($subj_info[0]);
+            $course_new->set_level($subj_info[1]);
+            $course_new->set_section($split[2]);
+            
             // get instructor info from first table children
             $course_info_detail = $crse_page->query('.//td', $course_info);
             $course_instr_name = trim($course_info_detail->item(3)->textContent);
 
-            array_push($details, $course_instr_name);
+            $course_new->set_instructor($course_instr_name);
             
-            // find the meet times (its a single row) from second table
             $meet_time_els = $crse_page->query('.//td[position() < last()]', $course_times);
-            foreach ($meet_time_els as $el) {
-                array_push($details, $el->textContent);
+            for ($j = 0; $j < $meet_time_els->length; $j += 6) {
+                $meet_time_new = new CourseMeetTime();
+
+                $meet_time_new->set_type(trim($meet_time_els->item($j)->textContent));
+                $meet_time_new->set_days(trim($meet_time_els->item($j + 2)->textContent));
+                $meet_time_new->set_location(trim($meet_time_els->item($j + 3)->textContent));
+            
+                $times = explode(' - ', trim($meet_time_els->item($j + 1)->textContent));
+                $meet_time_new->set_time_low($times[0]);
+                $meet_time_new->set_time_high($times[1]);
+
+                $dates = explode(' - ', trim($meet_time_els->item($j + 4)->textContent));
+                $meet_time_new->set_date_low(strtotime($dates[0]));
+                $meet_time_new->set_date_high(strtotime($dates[1]));
+
+                $course_new->add_meet_time($meet_time_new);
             }
 
-            $courses[$course_name->item(0)->textContent] = $details;
+            array_push($courses, $course_new);
         }
 
         return $courses;

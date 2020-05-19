@@ -66,7 +66,7 @@
                         $month = 10;
                     }
                     // $_SESSION['term'] = $term . strval($month);
-                    $_SESSION['term'] = '202010';
+                    $_SESSION['term'] = '201850';
 
                     header('Location: /home.php');
                     die();

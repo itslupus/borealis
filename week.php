@@ -22,5 +22,8 @@
         die();
     }
 
+    $courses = fetch_week($config, $_SESSION['term']);
+    $vm->courses = $courses;
+
     $vm->render('week.php', true);
 ?>

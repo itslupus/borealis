@@ -5,11 +5,9 @@
         <?php if(count($courses) == 0) { ?>
             <p>no courses this term</p>
         <?php } ?>
-        <?php foreach($courses as $k => $v){ ?>
-            <p><?=$k?></p>
-            <?php foreach($v as $z){ ?>
-                <p>> <?=$z?></p>
-            <?php } ?>
+        <?php foreach($courses as $course){ ?>
+            <p>[<?=$course->get_subj()?> <?=$course->get_level()?>] [<?=$course->get_section()?>] <?=$course->get_name()?></p>
+            <p><?=$course->get_instructor()?></p>
             <br>
         <?php } ?>
     </div>
