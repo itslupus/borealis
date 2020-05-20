@@ -58,11 +58,11 @@
         }
 
         public function get_date_low() {
-            return $this->date_low;
+            return date('Y/m/d', $this->date_low);
         }
 
         public function get_date_high() {
-            return $this->date_high;
+            return date('Y/m/d', $this->date_high);
         }
     }
 ?>

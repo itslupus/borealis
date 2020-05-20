@@ -53,7 +53,7 @@
             return $this->instructor;
         }
 
-        public function get_meet_time() {
+        public function get_meet_times() {
             return $this->meet_times;
         }
     }

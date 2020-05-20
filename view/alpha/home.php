@@ -1,6 +1,6 @@
 <p>welcome back <?=$name?></p><br>
 <div class = 'dropdown'>
-    <div class = 'dropdown-header padded'>week classes</div>
+    <div class = 'dropdown-header padded'>classes</div>
     <div class = 'dropdown-content'>
         <?php if(count($courses) == 0) { ?>
             <p>no courses this term</p>

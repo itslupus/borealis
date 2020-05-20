@@ -16,14 +16,14 @@
         $post_params = array('term_in' => $term);
         $curl->set_post($post_params);
         $response = $curl->get_page('/banprod/bwskfshd.P_CrseSchdDetl');
-
+        
         // get the datadisplaytable
         $crse_page = new Page($response);
         $tables = $crse_page->query('//table[@class = "datadisplaytable"]');
 
         // return array of courses
         $courses = array();
-        for ($i = 2; $i < $tables->length; $i += 2) {
+        for ($i = 0; $i < $tables->length; $i += 2) {
             $course_new = new Course();
 
             $details = array();
@@ -55,9 +55,15 @@
                 $meet_time_new->set_days(trim($meet_time_els->item($j + 2)->textContent));
                 $meet_time_new->set_location(trim($meet_time_els->item($j + 3)->textContent));
             
-                $times = explode(' - ', trim($meet_time_els->item($j + 1)->textContent));
-                $meet_time_new->set_time_low($times[0]);
-                $meet_time_new->set_time_high($times[1]);
+                $raw_times = trim($meet_time_els->item($j + 1)->textContent);
+                if ($raw_times === 'TBA') {
+                    $meet_time_new->set_time_low(0);
+                    $meet_time_new->set_time_high(0);
+                } else {
+                    $times = explode(' - ', $raw_times);
+                    $meet_time_new->set_time_low($times[0]);
+                    $meet_time_new->set_time_high($times[1]);
+                }
 
                 $dates = explode(' - ', trim($meet_time_els->item($j + 4)->textContent));
                 $meet_time_new->set_date_low(strtotime($dates[0]));
