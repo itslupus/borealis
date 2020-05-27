@@ -105,7 +105,7 @@
                 }
             };
 
-            xhr.open('POST', '../logic/FilterCourse.php', true);
+            xhr.open('POST', '../logic/FilterSubject.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.send('name=' + query);
         }, 500));

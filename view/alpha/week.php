@@ -27,7 +27,7 @@
                     <b><p style = 'background-color: salmon;'><?=$day?></p></b>
                     <?php foreach ($courses as $course) { ?>
                         <div class = 'course'>
-                            <p>[<?=$course->get_section()?>] <?=$course->get_subj()?></p>
+                            <p>[<?=$course->get_section()?>] <?=$course->get_subj()?> <?=$course->get_level()?></p>
                             <p><?=$course->get_instructor()?></p>
                             <p><?=$course->get_meet_times()[0]->get_time_low()?> to <?=$course->get_meet_times()[0]->get_time_high()?></p>
                             <p><?=$course->get_meet_times()[0]->get_location()?></p>
