@@ -1,7 +1,10 @@
 <?php
     require_once('../include/Initializer.php');
+    require_once('../persistence/MySQL.php');
+
     require_once('../object/CURL.php');
     require_once('../object/Page.php');
+    require_once('../object/Token.php');
 
     $config;
 
@@ -17,7 +20,7 @@
         die('invalid config file');
     } catch (InitializerInvalidSession $e) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // fwrite($file, "aurora.umanitoba.ca\tFALSE\t/banprod/\tFALSE\t0\tSESSID\there\n");
+            $sql = new MySQL($config);
 
             // read in id and password, even if they don't exist
             $stu_id = $_POST['id'];
@@ -44,6 +47,35 @@
                 // response size of < 500 bytes indicates login success
                 $response_size = $curl->get_downloaded_size();
                 if ($response_size < 500) {
+                    // register new user and token if not exists
+                    try {
+                        $user = $sql->get_user($stu_id);
+                        if ($user === false) {
+                            error_log('create new user', 4);
+                            $sql->insert_new_user($stu_id);
+                        } else {
+                            error_log('update user', 4);
+                            $sql->update_user_last_login($stu_id, time());
+                        }
+
+                        $token = $sql->get_token($stu_id);
+                        if ($token === false) {
+                            error_log('create new token', 4);
+                            $token = new Token();
+                            $token->generate_token();
+                            $token->set_tmp_file_path($tmp_file_path);
+                            $token->set_expires(time());
+
+                            $sql->insert_new_token($stu_id, $token);
+                        } else {
+                            error_log('token exists', 4);
+                            $sql->update_token_timeout($stu_id, time());
+                        }
+
+                    } catch (PDOException $e) {
+                        die('500 database error');
+                    }
+
                     $_SESSION['session_file'] = $tmp_file_path;
 
                     // replace the + from the url encoded form

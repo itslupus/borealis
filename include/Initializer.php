@@ -13,7 +13,7 @@
         public function __construct() {
             // $this->clean_tmp_files();
 
-            $this->config_data = parse_ini_file(__DIR__ . '/../_config.ini.php', true);
+            $this->config_data = parse_ini_file(__DIR__ . '/../_config.ini', true);
 
             $verify_keys = ['general', 'sql'];
             foreach ($verify_keys as $key) {
