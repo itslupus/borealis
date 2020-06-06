@@ -7,20 +7,16 @@
         private $db;
 
         public function __construct($config) {
-            try {
-                $host = $config['sql']['host'];
-                $tbl_name = $config['sql']['table'];
-                $username = $config['sql']['username'];
-                $password = $config['sql']['password'];
+            $host = $config['sql']['host'];
+            $tbl_name = $config['sql']['table'];
+            $username = $config['sql']['username'];
+            $password = $config['sql']['password'];
 
-                $this->db = new PDO("mysql:host=$host;dbname=$tbl_name", $username, $password);
-                $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->db = new PDO("mysql:host=$host;dbname=$tbl_name", $username, $password);
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                $this->create_user_table();
-                $this->create_token_table();
-            } catch (PDOException $e) {
-                die('Failed to connect to database: ' . $e->getMessage());
-            }
+            $this->create_user_table();
+            $this->create_token_table();
         }
 
         private function create_user_table() {
@@ -40,7 +36,7 @@
                 CREATE TABLE IF NOT EXISTS Tokens (
                     id INT NOT NULL UNIQUE,
                     token CHAR(32),
-                    cookie_file char(128),
+                    cookie_file char(32),
                     expires INT UNSIGNED,
                     FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
                 )
@@ -78,7 +74,7 @@
                 
                 $token = new Token();
                 $token->set_token($result['token']);
-                $token->set_tmp_file_path($result['cookie_file']);
+                $token->set_tmp_file_name($result['cookie_file']);
                 $token->set_expires($result['expires']);
 
                 return $token;
@@ -103,7 +99,7 @@
             $prepared = $this->db->prepare($query);
             $prepared->bindParam(':id', $id);
             $prepared->bindValue(':token', $token->get_token());
-            $prepared->bindValue(':tmp_file', $token->get_tmp_file_path());
+            $prepared->bindValue(':tmp_file', $token->get_tmp_file_name());
             $prepared->bindValue(':expire', $token->get_expires());
             $prepared->execute();
         }
@@ -117,16 +113,20 @@
             $prepared->execute();
         }
 
-        function update_token_timeout(int $id, int $timeout) {
-            $query = 'UPDATE Tokens SET expires = :expire WHERE id = :id';
+        function set_token_token(int $id, string $token) {
+            $query = 'UPDATE Tokens SET token = :token WHERE id = :id';
 
             $prepared = $this->db->prepare($query);
             $prepared->bindParam(':id', $id);
-            $prepared->bindValue(':expire', time());
+            $prepared->bindValue(':token', $token);
             $prepared->execute();
         }
 
-        function set_token_token(int $id, string $token) {
+        function delete_token($id) {
+            $query = 'DELETE FROM Tokens WHERE id = :id';
 
+            $prepared = $this->db->prepare($query);
+            $prepared->bindParam(':id', $id);
+            $prepared->execute();
         }
     }
