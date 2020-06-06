@@ -30,6 +30,7 @@
         die();
     }
 
+    //FIXME: this doesnt work, also 400 might be better suited vs 403
     if (!is_numeric($_POST['id']) || !strlen($_POST['id']) === 7) {
         // 403 forbidden
         http_response_code(403);
