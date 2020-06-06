@@ -39,6 +39,9 @@
 
     $tmp_file_path = $manager->generate_tmp_file();
 
+    $tmp_file_name = explode('/', $tmp_file_path);
+    $tmp_file_name = end($tmp_file_name);
+
     $main_url = $config['general']['main_url'];
 
     $curl = new CURL($main_url, $tmp_file_path);
@@ -66,11 +69,10 @@
                 $sql->update_user_last_login($_POST['id'], time());
             }
 
-            $file_name_split = explode('/', $tmp_file_path);
 
             $new_token = new Token();
             $new_token->generate_token();
-            $new_token->set_tmp_file_name(end($file_name_split));
+            $new_token->set_tmp_file_name($tmp_file_name);
             $new_token->set_expires(time());
 
             $token = $sql->get_token($_POST['id']);
@@ -82,8 +84,11 @@
 
             $sql->insert_new_token($_POST['id'], $new_token);
         } else {
+            // destroy the object, it holds a lock to our cookie file
+            $curl = null;
+
             //TODO: un-hardcode this
-            unlink($tmp_file_path);
+            unlink('../tmp/' . $tmp_file_name);
 
             // 200 but json error?
             http_response_code(200);
