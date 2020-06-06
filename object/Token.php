@@ -1,7 +1,7 @@
 <?php
     class Token {
         private $token;
-        private $tmp_file_path;
+        private $tmp_file_name;
         private $expires;
 
         public function generate_token() {
@@ -15,8 +15,8 @@
             $this->token = $token;
         }
 
-        public function set_tmp_file_path($file) {
-            $this->tmp_file_path = $file;
+        public function set_tmp_file_name($file) {
+            $this->tmp_file_name = $file;
         }
 
         public function set_expires($time) {
@@ -27,8 +27,8 @@
             return $this->token;
         }
 
-        public function get_tmp_file_path() {
-            return $this->tmp_file_path;
+        public function get_tmp_file_name() {
+            return $this->tmp_file_name;
         }
 
         public function get_expires() {
