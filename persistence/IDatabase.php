@@ -1,7 +1,8 @@
 <?php
     interface IDatabase {
         function get_user(int $id);
-        function get_token(int $id);
+        function get_token_by_id(int $id);
+        function get_token_by_token(string $token);
 
         function insert_new_user(int $id);
         function insert_new_token(int $id, Token $token);

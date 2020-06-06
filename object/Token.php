@@ -1,5 +1,6 @@
 <?php
     class Token {
+        private $user;
         private $token;
         private $tmp_file_name;
         private $expires;
@@ -9,6 +10,10 @@
             $token = hash('md5', $rand);
 
             $this->token = $token;
+        }
+
+        public function set_user($id) {
+            $this->user = $id;
         }
 
         public function set_token($token) {
@@ -21,6 +26,10 @@
 
         public function set_expires($time) {
             $this->expires = $time;
+        }
+
+        public function get_user() {
+            return $this->user;
         }
 
         public function get_token() {

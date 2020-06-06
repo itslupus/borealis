@@ -1,7 +1,7 @@
 <?php
     require_once('IDatabase.php');
-    require_once('../object/User.php');
-    require_once('../object/Token.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/User.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/Token.php');
 
     class MySQL implements IDatabase {
         private $db;
@@ -35,9 +35,9 @@
             $query = '
                 CREATE TABLE IF NOT EXISTS Tokens (
                     id INT NOT NULL UNIQUE,
-                    token CHAR(32),
-                    cookie_file char(32),
-                    expires INT UNSIGNED,
+                    token CHAR(32) NOT NULL UNIQUE,
+                    cookie_file char(32) NOT NULL UNIQUE,
+                    expires INT UNSIGNED NOT NULL,
                     FOREIGN KEY (id) REFERENCES Users(id) ON DELETE CASCADE
                 )
             ';
@@ -62,7 +62,7 @@
             return false;
         }
 
-        function get_token(int $id) {
+        function get_token_by_id(int $id) {
             $query = 'SELECT * FROM Tokens WHERE id = :id';
 
             $prepared = $this->db->prepare($query);
@@ -83,6 +83,27 @@
             return false;
         }
 
+        function get_token_by_token(string $token) {
+            $query = 'SELECT * FROM Tokens WHERE token = :token';
+
+            $prepared = $this->db->prepare($query);
+            $prepared->bindParam(':token', $token);
+            $prepared->execute();
+
+            if ($prepared->rowCount() === 1) {
+                $result = $prepared->fetch(PDO::FETCH_ASSOC);
+                
+                $token = new Token();
+                $token->set_user($result['id']);
+                $token->set_token($result['token']);
+                $token->set_tmp_file_name($result['cookie_file']);
+                $token->set_expires($result['expires']);
+
+                return $token;
+            }
+
+            return false;
+        }
 
         function insert_new_user(int $id) {
             $query = 'INSERT INTO Users VALUES (:id, :last_login)';
@@ -113,12 +134,12 @@
             $prepared->execute();
         }
 
-        function set_token_token(int $id, string $token) {
+        function set_token_token(int $id, string $new_token) {
             $query = 'UPDATE Tokens SET token = :token WHERE id = :id';
 
             $prepared = $this->db->prepare($query);
             $prepared->bindParam(':id', $id);
-            $prepared->bindValue(':token', $token);
+            $prepared->bindValue(':token', $new_token);
             $prepared->execute();
         }
 

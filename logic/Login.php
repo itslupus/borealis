@@ -1,11 +1,11 @@
 <?php
-    require_once('../include/MrManager.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/include/MrManager.php');
 
-    require_once('../persistence/MySQL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/persistence/MySQL.php');
 
-    require_once('../object/CURL.php');
-    require_once('../object/Token.php');
-    require_once('../object/User.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/Token.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/User.php');
     
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         // 405 method not allowed
@@ -19,10 +19,11 @@
         die();
     }
 
-    $manager = new MrManager();
+    $manager = null;
     $config = null;
 
     try {
+        $manager = new MrManager();
         $config = $manager->get_config();
     } catch (MrManagerInvalidConfig $e) {
         // 500 internal server error
@@ -73,9 +74,9 @@
             $new_token = new Token();
             $new_token->generate_token();
             $new_token->set_tmp_file_name($tmp_file_name);
-            $new_token->set_expires(time());
+            $new_token->set_expires(time() + (60 * 20)); // 20 minute timeout
 
-            $token = $sql->get_token($_POST['id']);
+            $token = $sql->get_token_by_id($_POST['id']);
             if ($token !== false) {
                 //TODO: un-hardcode this
                 unlink('../tmp/' . $token->get_tmp_file_name());
