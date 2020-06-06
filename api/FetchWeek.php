@@ -1,8 +1,8 @@
 <?php
-    require_once('object/CURL.php');
-    require_once('object/Page.php');
-    require_once('object/Course.php');
-    require_once('object/CourseMeetTime.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Course.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CourseMeetTime.php');
 
     // fetch course information for winter 2020 term
     //        AAAABB

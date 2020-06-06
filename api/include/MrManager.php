@@ -1,8 +1,8 @@
 <?php
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/persistence/MySQL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/MySQL.php');
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/Token.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
 
     class MrManager {
         private $config_data = null;

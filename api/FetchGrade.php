@@ -1,9 +1,9 @@
 <?php
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/include/MrManager.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/CURL.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/Token.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/Page.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
 
     if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         // 405 method not allowed

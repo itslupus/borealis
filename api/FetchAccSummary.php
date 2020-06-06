@@ -1,8 +1,8 @@
 <?php
-    require_once('object/CURL.php');
-    require_once('object/Page.php');
-    require_once('object/AccSummary.php');
-    require_once('object/AccSummaryDetail.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/AccSummary.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/AccSummaryDetail.php');
 
     function fetch_acc_summary($config) {
         $tmp_path = $_SESSION['session_file'];

@@ -1,50 +1,67 @@
 <?php
-    // method not allowed
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
+
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        // 405 method not allowed
         http_response_code(405);
         die();
     }
 
-    // bad request
-    if (!isset($_POST['course_code']) || !isset($_POST['term'])) {
+    if (!isset($_GET['token']) || !isset($_GET['term']) || !isset($_GET['course_code'])) {
+        // 400 bad request
         http_response_code(400);
         die();
     }
 
-    $config;
-    
+    $course_code = explode(' ', $_GET['course_code']);
+
+    if (count($course_code) !== 2) {
+        // 400 bad request
+        http_response_code(400);
+        die();
+    }
+    $manager = null;
+    $config = null;
+    $token = null;
+
     try {
-        require_once('../include/Initializer.php');
-        $init = new Initializer();
-    
-        $config = $init->get_config();
-        $init->verify_session();
-    } catch (InitializerConfigInvalid $e) {
-        // server error, invalid config
+        $manager = new MrManager();
+
+        $config = $manager->get_config();
+
+        $token = $manager->validate_token($_GET['token']);
+        $token = $manager->regenerate_token($token);
+
+        $manager->validate_banner_session($token);
+    } catch (MrManagerInvalidConfig $e) {
+        // 500 internal server error
         http_response_code(500);
         die();
-    } catch (InitializerInvalidSession $e) {
-        // invalid session, 401 unauth
+    } catch (MrManagerInvalidToken $e2) {
+        // 401 unauth
         http_response_code(401);
-        die();
+        die('invalid token');
+    } catch (MrManagerInvalidBannerSession $e3) {
+        // 401 unauth
+        http_response_code(401);
+        die('invalid banner');
+    } catch (MrManagerExpiredToken $e4) {
+        // 401 unauth
+        http_response_code(401);
+        die('expired token');
     }
-
-    $course_code = explode(' ', $_POST['course_code']);
-
-    // bad request
-    if (count($course_code) !== 2) {
-        http_response_code(400);
-        die();
-    }
-
-    require_once('../object/CURL.php');
-    require_once('../object/Page.php');
     
-    $tmp_path = $_SESSION['session_file'];
-    $curl = new CURL($config['general']['main_url'], $tmp_path);
+    //TODO: un-hardcode cookie path
+    $main_url = $config['general']['main_url'];
+    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/tmp/' . $token->get_tmp_file_name();
+    $curl = new CURL($main_url, $tmp_path);
     
     $data = array(
-        'term_in' => $_POST['term'],
+        'term_in' => $_GET['term'],
         'sel_subj' => ['dummy', $course_code[0]],
         'SEL_CRSE' => $course_code[1],
         'SEL_TITLE' => '',
@@ -131,8 +148,11 @@
         }
     }
 
-    $sections = json_encode($sections);
+    $result = array(
+        'token' => $token->get_token(),
+        'sections' => $sections
+    );
 
     http_response_code(200);
-    echo($sections);
+    echo(json_encode($result));
 ?>

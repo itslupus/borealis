@@ -1,11 +1,11 @@
 <?php
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/include/MrManager.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/persistence/MySQL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/MySQL.php');
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/CURL.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/Token.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/object/User.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/User.php');
     
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         // 405 method not allowed
