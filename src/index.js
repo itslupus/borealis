@@ -1,34 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Route, Link, BrowserRouter as Router} from 'react-router-dom';
+import {Route, BrowserRouter as Router} from 'react-router-dom';
 
-import Alpha from './Alpha';
-import Bravo from './Bravo';
-import Charlie from './Charlie';
+import './styles.css';
+
 import Home from './Home';
+import Week from './Week';
+import Grades from './Grades';
+import Search from './Search';
+import Login from './Login';
+
+import Navigation from './compenents/Navigation';
 
 ReactDOM.render(
     <React.StrictMode>
         <Router>
-            <div>
-                <ul>
-                    <li>
-                        <Link to = '/'>Home</Link>
-                    </li>
-                    <li>
-                        <Link to = '/alpha'>Alpha</Link>
-                    </li>
-                    <li>
-                        <Link to = '/bravo'>Bravo</Link>
-                    </li>
-                    <li>
-                        <Link to = '/charlie'>Charlie</Link>
-                    </li>
-                </ul>
+            <Navigation />
+            <div className = 'app'>
                 <Route exact path = '/' component = {Home} />
-                <Route path = '/alpha' component = {Alpha} />
-                <Route path = '/bravo' component = {Bravo} />
-                <Route path = '/charlie' component = {Charlie} />
+                <Route path = '/week' component = {Week} />
+                <Route path = '/grades' component = {Grades} />
+                <Route path = '/search' component = {Search} />
+                <Route path = '/login' component = {Login} />
             </div>
         </Router>
     </React.StrictMode>,
