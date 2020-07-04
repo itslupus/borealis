@@ -1,4 +1,20 @@
 <?php
+    /* ===========================================================
+    ||  [Fetches grades based on term, includes term and overall]
+    ||  PHP     7.2.24
+    || 
+    ||  GET     /api/FetchGrade.php?term={string}
+    ||
+    ||  PARAMS  token = {string}
+    ||          term = {string}
+    ||
+    ||  RETURN  {
+    ||              result: {
+    ||                  
+    ||              }
+    ||          }
+    || ======================================================== */
+
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
 
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
@@ -11,7 +27,7 @@
         die();
     }
 
-    if (!isset($_GET['token']) || !isset($_GET['term'])) {
+    if (!isset($_COOKIE['token']) || !isset($_GET['term'])) {
         // 400 bad request
         http_response_code(400);
         die();
@@ -26,10 +42,11 @@
 
         $config = $manager->get_config();
 
-        $token = $manager->validate_token($_GET['token']);
+        $token = $manager->validate_token($_COOKIE['token']);
         $token = $manager->regenerate_token($token);
 
         $manager->validate_banner_session($token);
+        $manager->set_token_cookie($token);
     } catch (MrManagerInvalidConfig $e) {
         // 500 internal server error
         http_response_code(500);
@@ -50,7 +67,7 @@
     
     //TODO: un-hardcode cookie path
     $main_url = $config['general']['main_url'];
-    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/tmp/' . $token->get_tmp_file_name();
+    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
     $curl = new CURL($main_url, $tmp_path);
 
     $curl->set_post(array('term_in' => $_GET['term']));
@@ -61,9 +78,10 @@
     $data_tables = $page->query('//table[@class = "datadisplaytable"]');
 
     $result = array(
-        'token' => $token->get_token(),
-        'grades' => array(),
-        'gpa' => array()
+        'result' => array(
+            'grades' => array(),
+            'gpa' => array()
+        )
     );
 
     $grade_table = $data_tables->item(1);
@@ -79,7 +97,7 @@
             'hours' => trim($cells->item(11)->textContent)
         );
 
-        array_push($result['grades'], $result_add);
+        array_push($result['result']['grades'], $result_add);
     }
 
     $gpa_table = $data_tables->item(2);
@@ -95,9 +113,10 @@
             'gpa' => trim($cells->item(4)->textContent)
         );
 
-        array_push($result['gpa'], $result_add);
+        array_push($result['result']['gpa'], $result_add);
     }
 
+    header('Content-Type: text/json');
     http_response_code(200);
     echo(json_encode($result));
 ?>

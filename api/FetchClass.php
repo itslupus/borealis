@@ -57,7 +57,7 @@
     
     //TODO: un-hardcode cookie path
     $main_url = $config['general']['main_url'];
-    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/tmp/' . $token->get_tmp_file_name();
+    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
     $curl = new CURL($main_url, $tmp_path);
     
     $data = array(

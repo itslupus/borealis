@@ -1,4 +1,18 @@
 <?php
+    /* ===========================================================
+    ||  [Authenticates the client with the banner software]
+    ||  PHP     7.2.24
+    || 
+    ||  POST    /api/Authenticate.php
+    ||
+    ||  PARAMS  id = {int}
+    ||          password = {string}
+    ||
+    ||  RETURN  {
+    ||              status: {int}
+    ||          }
+    || ======================================================== */
+
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
 
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/MySQL.php');
@@ -79,21 +93,23 @@
             $token = $sql->get_token_by_id($_POST['id']);
             if ($token !== false) {
                 //TODO: un-hardcode this
-                unlink('../tmp/' . $token->get_tmp_file_name());
+                unlink($_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name());
                 $sql->delete_token($_POST['id']);
             }
 
             $sql->insert_new_token($_POST['id'], $new_token);
+
+            $manager->set_token_cookie($new_token);
         } else {
             // destroy the object, it holds a lock to our cookie file
             $curl = null;
 
             //TODO: un-hardcode this
-            unlink('../tmp/' . $tmp_file_name);
+            unlink($_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $tmp_file_name);
 
             // 200 but json error?
             http_response_code(200);
-            die('bad login');
+            die(json_encode(array('status' => 1)));
         }
     } catch (PDOException $e) {
         // 500 internal server error
@@ -102,5 +118,5 @@
     }
 
     http_response_code(200);
-    die($new_token->get_token());
+    die(json_encode(array('status' => 0)));
 ?>
