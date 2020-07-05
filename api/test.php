@@ -5,8 +5,8 @@
         error_log($_COOKIE['token'], 4);
     }
     
-    setcookie('token', '123456', time() + 60 * 60, '/', '', false);
+    // setcookie('token', '123456', time() + 60 * 60, '/', '', false);
     header('Content-Type: text/json');
-    http_response_code(200);
+    http_response_code(400);
     echo(json_encode(array('token' => -1)));
 ?>

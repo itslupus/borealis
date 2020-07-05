@@ -5,11 +5,11 @@
     || 
     ||  POST    /api/Authenticate.php
     ||
-    ||  PARAMS  id = {int}
-    ||          password = {string}
+    ||  PARAMS  id: int
+    ||          password: string
     ||
     ||  RETURN  {
-    ||              status: {int}
+    ||              status: int
     ||          }
     || ======================================================== */
 

@@ -74,7 +74,7 @@
         }
 
         public function set_token_cookie($token) {
-            setcookie('token', $token->get_token(), $token->get_expires(), '', '', false);
+            setcookie('token', $token->get_token(), $token->get_expires(), '/', '', false);
         }
     }
 

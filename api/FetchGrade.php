@@ -3,14 +3,52 @@
     ||  [Fetches grades based on term, includes term and overall]
     ||  PHP     7.2.24
     || 
-    ||  GET     /api/FetchGrade.php?term={string}
+    ||  POST    /api/FetchGrade.php
     ||
-    ||  PARAMS  token = {string}
-    ||          term = {string}
+    ||  PARAMS  term: string
     ||
     ||  RETURN  {
     ||              result: {
-    ||                  
+    ||                  grades: [
+    ||                      {
+    ||                          subj: COMP
+    ||                          course: 3010
+    ||                          section: A01
+    ||                          grade: A
+    ||                          hours: 3.00
+    ||                      },
+    ||                      ......
+    ||                  ],
+    ||                  gpa: [
+    ||                      {
+    ||                          attempt: 12.00
+    ||                          earned: 12.00
+    ||      [TERM GPA]          hours: 12.00
+    ||                          quality: 42.00
+    ||                          gpa: 4.00
+    ||                      },
+    ||                      {
+    ||                          attempt: 12.00
+    ||                          earned: 12.00
+    ||   [CUMULATIVE GPA]       hours: 12.00
+    ||                          quality: 42.00
+    ||                          gpa: 4.00
+    ||                      },
+    ||                      {
+    ||                          attempt: 12.00
+    ||                          earned: 12.00
+    ||    [TRANSFER GPA]        hours: 12.00
+    ||                          quality: 42.00
+    ||                          gpa: 4.00
+    ||                      },
+    ||                      {
+    ||                          attempt: 12.00
+    ||                          earned: 12.00
+    ||      [TOTAL GPA]         hours: 12.00
+    ||                          quality: 42.00
+    ||                          gpa: 4.00
+    ||                      }
+    ||                  ],
     ||              }
     ||          }
     || ======================================================== */
@@ -21,13 +59,13 @@
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         // 405 method not allowed
         http_response_code(405);
         die();
     }
 
-    if (!isset($_COOKIE['token']) || !isset($_GET['term'])) {
+    if (!isset($_COOKIE['token']) || !isset($_POST['term'])) {
         // 400 bad request
         http_response_code(400);
         die();
@@ -70,7 +108,7 @@
     $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
     $curl = new CURL($main_url, $tmp_path);
 
-    $curl->set_post(array('term_in' => $_GET['term']));
+    $curl->set_post(array('term_in' => $_POST['term']));
     $result = $curl->get_page('/banprod/bwskogrd.P_ViewGrde');
 
     $page = new Page($result);

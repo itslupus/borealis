@@ -7,8 +7,12 @@ export default class Login extends React.Component {
         super(props);
 
         this.state = {
-            username_valid: true,
-            password_valid: true,
+            errors: {
+                username: false,
+                password: false,
+                network: false
+            },
+            state_text: '',
             authenticated: is_authenticated()
         };
         this.login = this.login.bind(this);
@@ -23,17 +27,17 @@ export default class Login extends React.Component {
         let is_valid = true;
 
         if (id === '' || id.length !== 7 || isNaN(id) === true) {
-            this.setState({username_valid: false});
+            this.setState({errors: {username: true}});
             is_valid = false;
         } else {
-            this.setState({username_valid: true});
+            this.setState({errors: {username: false}});
         }
 
         if (password === '') {
-            this.setState({password_valid: false});
+            this.setState({errors: {password: true}});
             is_valid = false;
         } else {
-            this.setState({password_valid: true});
+            this.setState({errors: {password: false}});
         }
 
         if (is_valid === false)
@@ -43,23 +47,32 @@ export default class Login extends React.Component {
         post_data.append('id', id);
         post_data.append('password', password);
 
-        fetch('api/test.php', {
+        this.setState({state_text: 'logging in...'});
+
+        fetch('api/Authenticate.php', {
             method: 'POST',
             body: post_data
         })
         .then(response => {
-            console.log(document.cookie);
+            // not 200 OK
+            if (response.ok === false)
+                throw new Error('I told ya don\'t touch that darn thing.')
 
             return response.json();
         })
         .then(
             (data) => {
-                console.log(data);
-                
-                this.props.history.push('/');
-                this.setState({authenticated: true});
+                // invalid login info
+                if (data.status === 1) {
+                    this.setState({state_text: 'invalid id or password'});
+                } else {
+                    this.props.history.push('/');
+                    this.setState({authenticated: true});
+                }
             },
-            (error) => console.log(error)
+            (error) => {
+                this.setState({errors: {network: true}});
+            }
         );
     }
 
@@ -75,16 +88,22 @@ export default class Login extends React.Component {
             </form>
         );
 
+        let state = <p>{this.state.state_text}</p>;
+
         let err_msg = [];
 
-        if (this.state.password_valid === false) {
-            err_msg.push(<p>invalid password </p>);
+        if (this.state.errors.username === true) {
+            err_msg.push(<p>invalid username</p>);
         }
         
-        if (this.state.username_valid === false) {
-            err_msg.push(<p>invalid username </p>);
+        if (this.state.errors.password === true) {
+            err_msg.push(<p>invalid password</p>);
         }
 
-        return [form, err_msg];
+        if (this.state.errors.network === true) {
+            err_msg.push(<p>invalid network</p>);
+        }
+
+        return [form, state, err_msg];
     }
 }
