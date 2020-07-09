@@ -2,7 +2,7 @@ import React from 'react';
 
 import {is_authenticated} from './Auth';
 
-export default class Login extends React.Component {
+export default class Welcome extends React.Component {
     constructor(props) {
         super(props);
 
@@ -66,7 +66,7 @@ export default class Login extends React.Component {
                 if (data.status === 1) {
                     this.setState({state_text: 'invalid id or password'});
                 } else {
-                    this.props.history.push('/');
+                    this.props.history.push('/home');
                     this.setState({authenticated: true});
                 }
             },
@@ -76,10 +76,13 @@ export default class Login extends React.Component {
         );
     }
 
-    render() {
-        if (this.state.authenticated === true)
-            return <p>already logged in</p>;
+    componentDidMount() {
+        if (this.state.authenticated === true) {
+            this.props.history.push('/home');
+        }
+    }
 
+    render() {
         const form = (
             <form onSubmit = {this.login} autoComplete = 'off'>
                 <input type = 'text' name = 'id' placeholder = 'student number'></input>

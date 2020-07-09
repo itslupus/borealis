@@ -1,25 +1,65 @@
 <?php
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
+
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Course.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CourseMeetTime.php');
 
-    // fetch course information for winter 2020 term
-    //        AAAABB
-    // year --^^^^
-    //            ^^-- term (90 => fall, 10 => winter, 50 => spring/summer)
-    function fetch_week($config, $term) {
-        // get the session file and create curl instance
-        $tmp_path = $_SESSION['session_file'];
-        $curl = new CURL($config['general']['main_url'], $tmp_path);
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        // 405 method not allowed
+        http_response_code(405);
+        die();
+    }
 
-        $post_params = array('term_in' => $term);
-        $curl->set_post($post_params);
-        $response = $curl->get_page('/banprod/bwskfshd.P_CrseSchdDetl');
+    if (!isset($_COOKIE['token']) || !isset($_POST['term'])) {
+        // 400 bad request
+        http_response_code(400);
+        die();
+    }
+
+    $manager = null;
+    $config = null;
+    $token = null;
+
+    try {
+        $manager = new MrManager();
+
+        $config = $manager->get_config();
+
+        $token = $manager->validate_token($_COOKIE['token']);
+        $token = $manager->regenerate_token($token);
+
+        $manager->validate_banner_session($token);
+        $manager->set_token_cookie($token);
+    } catch (MrManagerInvalidConfig $e) {
+        // 500 internal server error
+        http_response_code(500);
+        die();
+    } catch (MrManagerInvalidToken $e2) {
+        // 401 unauth
+        http_response_code(401);
+        die('invalid token');
+    } catch (MrManagerInvalidBannerSession $e3) {
+        // 401 unauth
+        http_response_code(401);
+        die('invalid banner');
+    } catch (MrManagerExpiredToken $e4) {
+        // 401 unauth
+        http_response_code(401);
+        die('expired token');
+    }
+    
+    //TODO: un-hardcode cookie path
+    $main_url = $config['general']['main_url'];
+    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
+    
+    $post_params = array('term_in' => $_POST['term']);
+    $curl->set_post($post_params);
+    $response = $curl->get_page('/banprod/bwskfshd.P_CrseSchdDetl');
         
-        // get the datadisplaytable
-        $crse_page = new Page($response);
-        $tables = $crse_page->query('//table[@class = "datadisplaytable"]');
+    // get the datadisplaytable
+    $crse_page = new Page($response);
+    $tables = $crse_page->query('//table[@class = "datadisplaytable"]');
 
         // return array of courses
         $courses = array();
@@ -76,5 +116,4 @@
         }
 
         return $courses;
-    }
 ?>

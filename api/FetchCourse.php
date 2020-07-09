@@ -5,25 +5,26 @@
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         // 405 method not allowed
         http_response_code(405);
         die();
     }
 
-    if (!isset($_GET['token']) || !isset($_GET['term']) || !isset($_GET['course_code'])) {
+    if (!isset($_COOKIE['token']) || !isset($_POST['term']) || !isset($_POST['course_code'])) {
         // 400 bad request
         http_response_code(400);
         die();
     }
 
-    $course_code = explode(' ', $_GET['course_code']);
+    $course_code = explode(' ', $_POST['course_code']);
 
     if (count($course_code) !== 2) {
         // 400 bad request
         http_response_code(400);
         die();
     }
+
     $manager = null;
     $config = null;
     $token = null;
@@ -33,10 +34,11 @@
 
         $config = $manager->get_config();
 
-        $token = $manager->validate_token($_GET['token']);
+        $token = $manager->validate_token($_COOKIE['token']);
         $token = $manager->regenerate_token($token);
 
         $manager->validate_banner_session($token);
+        $manager->set_token_cookie($token);
     } catch (MrManagerInvalidConfig $e) {
         // 500 internal server error
         http_response_code(500);
@@ -61,7 +63,7 @@
     $curl = new CURL($main_url, $tmp_path);
     
     $data = array(
-        'term_in' => $_GET['term'],
+        'term_in' => $_POST['term'],
         'sel_subj' => ['dummy', $course_code[0]],
         'SEL_CRSE' => $course_code[1],
         'SEL_TITLE' => '',
@@ -149,10 +151,10 @@
     }
 
     $result = array(
-        'token' => $token->get_token(),
-        'sections' => $sections
+        'result' => array('sections' => $sections)
     );
 
+    header('Content-Type: text/json');
     http_response_code(200);
     echo(json_encode($result));
 ?>

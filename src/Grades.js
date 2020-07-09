@@ -40,7 +40,7 @@ export default class Grades extends React.Component {
                     this.setState({data: JSON.stringify(data)});
                 },
                 (error) => {
-                    console.log('network error')
+                    this.setState({data: 'network error'});
                 }
             );
         }
@@ -64,10 +64,14 @@ export default class Grades extends React.Component {
             let data = this.state.data;
 
             return (
-                <div><p>home '{cookie}'</p><p>{data}</p></div>
+                <div><p>grades '{cookie}'</p><p>{data}</p></div>
             );
         } else {
-            return <p>home, you aint authenticated</p>;
+            return <p>grades, you aint authenticated</p>;
         }
     }
 }
+
+/*
+{"result":{"grades":[{"subj":"COMP","course":"3010","section":"A01","grade":"B","hours":"3.000"},{"subj":"COMP","course":"3350","section":"A01","grade":"A","hours":"3.000"},{"subj":"COMP","course":"3430","section":"A02","grade":"A","hours":"3.000"},{"subj":"SCI","course":"2000","section":"T03","grade":"B","hours":"3.000"}],"gpa":[{"attempt":"12.000","earned":"12.000","hours":"12.000","quality":"42.00","gpa":"3.50"},{"attempt":"90.000","earned":"81.000","hours":"90.000","quality":"276.00","gpa":"3.07"},{"attempt":"0.000","earned":"0.000","hours":"0.000","quality":"0.00","gpa":"0.00"},{"attempt":"90.000","earned":"81.000","hours":"90.000","quality":"276.00","gpa":"3.07"}]}}
+*/
