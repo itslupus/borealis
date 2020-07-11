@@ -27,6 +27,9 @@ export default class Header extends React.Component {
             return (
                 <header>
                     {brand}
+                    <div className = 'inline nav-links'>
+                        <Link className = 'link' to = 'test'>[TEST]</Link>
+                    </div>
                 </header>
             );
         }

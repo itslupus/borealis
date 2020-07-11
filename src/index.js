@@ -9,6 +9,7 @@ import Home from './Home';
 import Week from './Week';
 import Grades from './Grades';
 import Search from './Search';
+import Logout from './Logout';
 
 import Test from './Test'
 
@@ -76,7 +77,7 @@ class App extends React.Component {
                         />
                         <Route path = '/logout'
                             render = {
-                                () => (this.logout_handler())
+                                (props) => (<Logout logout_handler = {this.logout_handler} {...props}/>)
                             }
                         />
                         <Route path = '/test'
