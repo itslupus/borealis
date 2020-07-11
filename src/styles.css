@@ -4,6 +4,10 @@
     color: white;
 }
 
+*:focus {
+    outline: none;
+}
+
 html {
     background-color: rgba(0, 0, 0, 0.9);
     height: 100%;
@@ -77,6 +81,28 @@ header .brand {
 
 .inline {
     display: inline;
+}
+
+input[type = 'text'],
+input[type = 'password'] {
+    font-weight: normal;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #393d53;
+    transition: 0.5s;
+    padding: 0.5rem;
+}
+
+input[type = 'submit'] {
+    font-weight: normal;
+    background: transparent;
+    border: 2px solid #393d53;
+    padding: 0.5rem;
+}
+
+input[type = 'text']:focus,
+input[type = 'password']:focus {
+    border-bottom: 2px solid white;
 }
 
 /* =========================

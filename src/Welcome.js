@@ -1,19 +1,15 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 
-import {is_authenticated} from './Auth';
-
-export default class Welcome extends React.Component {
+class Welcome extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            errors: {
-                username: false,
-                password: false,
-                network: false
-            },
-            state_text: '',
-            authenticated: is_authenticated()
+            id: false,
+            password: false,
+            network: false,
+            state_text: ''
         };
         this.login = this.login.bind(this);
     }
@@ -25,29 +21,29 @@ export default class Welcome extends React.Component {
         const password = event.target.password.value;
 
         let is_valid = true;
-
+        
         if (id === '' || id.length !== 7 || isNaN(id) === true) {
-            this.setState({errors: {username: true}});
+            this.setState({id: true});
             is_valid = false;
         } else {
-            this.setState({errors: {username: false}});
+            this.setState({id: false});
         }
 
         if (password === '') {
-            this.setState({errors: {password: true}});
+            this.setState({password: true});
             is_valid = false;
         } else {
-            this.setState({errors: {password: false}});
+            this.setState({password: false});
         }
 
         if (is_valid === false)
             return;
 
+        this.setState({state_text: 'logging in...'});
+
         let post_data = new URLSearchParams();
         post_data.append('id', id);
         post_data.append('password', password);
-
-        this.setState({state_text: 'logging in...'});
 
         fetch('api/Authenticate.php', {
             method: 'POST',
@@ -62,22 +58,29 @@ export default class Welcome extends React.Component {
         })
         .then(
             (data) => {
-                // invalid login info
                 if (data.status === 1) {
-                    this.setState({state_text: 'invalid id or password'});
+                    this.setState({state_text: 'wrong id/password'});
                 } else {
+                    this.props.set_auth_state(true);
                     this.props.history.push('/home');
-                    this.setState({authenticated: true});
                 }
             },
             (error) => {
-                this.setState({errors: {network: true}});
+                this.setState({state_text: 'network error'});
             }
         );
     }
 
+    componentDidUpdate(prev_props) {
+        if (this.props.location.key !== prev_props.location.key) {
+            if (this.props.authenticated === true) {
+                this.props.history.push('/home');
+            }
+        }
+    }
+
     componentDidMount() {
-        if (this.state.authenticated === true) {
+        if (this.props.authenticated === true) {
             this.props.history.push('/home');
         }
     }
@@ -85,8 +88,8 @@ export default class Welcome extends React.Component {
     render() {
         const form = (
             <form onSubmit = {this.login} autoComplete = 'off'>
-                <input type = 'text' name = 'id' placeholder = 'student number'></input>
-                <input type = 'password' name = 'password' placeholder = 'password'></input>
+                <input type = 'text' name = 'id' placeholder = 'student number'></input><br />
+                <input type = 'password' name = 'password' placeholder = 'password'></input><br /><br />
                 <input type = 'submit' value = 'login'></input>
             </form>
         );
@@ -95,18 +98,20 @@ export default class Welcome extends React.Component {
 
         let err_msg = [];
 
-        if (this.state.errors.username === true) {
-            err_msg.push(<p>invalid username</p>);
+        if (this.state.id === true) {
+            err_msg.push(<p>invalid id</p>);
         }
         
-        if (this.state.errors.password === true) {
+        if (this.state.password === true) {
             err_msg.push(<p>invalid password</p>);
         }
 
-        if (this.state.errors.network === true) {
+        if (this.state.network === true) {
             err_msg.push(<p>invalid network</p>);
         }
 
         return [form, state, err_msg];
     }
 }
+
+export default withRouter(Welcome);

@@ -1,12 +1,11 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 
-import {is_authenticated} from './Auth';
-export default class Home extends React.Component {
+class Home extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            authenticated: false,
             data: ''
         }
 
@@ -14,10 +13,7 @@ export default class Home extends React.Component {
     }
 
     fetch_data() {
-        let is_auth = is_authenticated();
-        this.setState({authenticated: is_auth});
-
-        if (is_auth === true) {
+        if (this.props.authenticated === true) {
             this.setState({data: 'loading...'});
 
             fetch('api/FetchAccSummary.php', {
@@ -38,6 +34,8 @@ export default class Home extends React.Component {
                     this.setState({data: 'network error'});
                 }
             );
+        } else {
+            this.props.history.push('/');
         }
     }
 
@@ -52,7 +50,7 @@ export default class Home extends React.Component {
     }
 
     render() {
-        let authed = this.state.authenticated;
+        let authed = this.props.authenticated;
 
         if (authed === true) {
             let cookie = document.cookie;
@@ -66,6 +64,8 @@ export default class Home extends React.Component {
         }
     }
 }
+
+export default withRouter(Home);
 
 /*
 {"result":{"balance":"$0.00","items":[{"desc":"Fac of Science Tuition","charge":"$1,745.04","payment":" "},{"desc":"Lab Fees","charge":"$39.26","payment":" "},{"desc":"Library Fee","charge":"$22.82","payment":" "},{"desc":"Registration Fee","charge":"$22.82","payment":" "},{"desc":"Sport & Recreation Fee","charge":"$86.64","payment":" "},{"desc":"Student Organization Fees","charge":"$125.84","payment":" "},{"desc":"Student Services Fee","charge":"$22.82","payment":" "},{"desc":"Tech Fee","charge":"$78.12","payment":" "},{"desc":"U-PASS fee","charge":"$136.25","payment":" "},{"desc":"Payment- Web Banking","charge":" ","payment":"$2,363.61"}]}}

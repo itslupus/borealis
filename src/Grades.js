@@ -1,13 +1,11 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 
-import {is_authenticated} from './Auth';
-
-export default class Grades extends React.Component {
+class Grades extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            authenticated: false,
             data: ''
         }
 
@@ -15,10 +13,7 @@ export default class Grades extends React.Component {
     }
 
     fetch_data() {
-        let is_auth = is_authenticated();
-        this.setState({authenticated: is_auth});
-
-        if (is_auth === true) {
+        if (this.props.authenticated === true) {
             this.setState({data: 'loading...'});
 
             let post_data = new URLSearchParams();
@@ -43,6 +38,8 @@ export default class Grades extends React.Component {
                     this.setState({data: 'network error'});
                 }
             );
+        } else {
+            this.props.history.push('/');
         }
     }
 
@@ -57,7 +54,7 @@ export default class Grades extends React.Component {
     }
 
     render() {
-        let authed = this.state.authenticated;
+        let authed = this.props.authenticated;
 
         if (authed === true) {
             let cookie = document.cookie;
@@ -71,6 +68,8 @@ export default class Grades extends React.Component {
         }
     }
 }
+
+export default withRouter(Grades);
 
 /*
 {"result":{"grades":[{"subj":"COMP","course":"3010","section":"A01","grade":"B","hours":"3.000"},{"subj":"COMP","course":"3350","section":"A01","grade":"A","hours":"3.000"},{"subj":"COMP","course":"3430","section":"A02","grade":"A","hours":"3.000"},{"subj":"SCI","course":"2000","section":"T03","grade":"B","hours":"3.000"}],"gpa":[{"attempt":"12.000","earned":"12.000","hours":"12.000","quality":"42.00","gpa":"3.50"},{"attempt":"90.000","earned":"81.000","hours":"90.000","quality":"276.00","gpa":"3.07"},{"attempt":"0.000","earned":"0.000","hours":"0.000","quality":"0.00","gpa":"0.00"},{"attempt":"90.000","earned":"81.000","hours":"90.000","quality":"276.00","gpa":"3.07"}]}}

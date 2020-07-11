@@ -9,7 +9,6 @@ import Home from './Home';
 import Week from './Week';
 import Grades from './Grades';
 import Search from './Search';
-import Logout from './Logout';
 
 import Test from './Test'
 
@@ -30,17 +29,29 @@ class App extends React.Component {
         this.state = {
             authenticated: auth
         };
+
+        this.set_auth_state = this.set_auth_state.bind(this);
+        this.logout_handler = this.logout_handler.bind(this);
+    }
+
+    set_auth_state(authed) {
+        this.setState({authenticated: authed});
     }
     
+    logout_handler() {
+        document.cookie = 'token=; ;path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        this.set_auth_state(false);
+    }
+
     render() {
         return (
             <React.StrictMode>
                 <Router>
-                    <Header />
+                    <Header authenticated = {this.state.authenticated} />
                     <div className = 'app'>
                         <Route exact path = '/'
                             render = {
-                                (props) => (<Welcome authenticated = {this.state.authenticated} {...props}/>)
+                                (props) => (<Welcome authenticated = {this.state.authenticated} login_handler = {this.login_handler} {...props}/>)
                             }
                         />
                         <Route path = '/home'
@@ -65,7 +76,7 @@ class App extends React.Component {
                         />
                         <Route path = '/logout'
                             render = {
-                                (props) => (<Logout authenticated = {this.state.authenticated} {...props}/>)
+                                () => (this.logout_handler())
                             }
                         />
                         <Route path = '/test'
