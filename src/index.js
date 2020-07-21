@@ -16,6 +16,9 @@ import Test from './Test'
 import Header from './compenents/Header';
 import Footer from './compenents/Footer';
 
+import Privacy from './Privacy'
+import About from './About'
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -83,6 +86,16 @@ class App extends React.Component {
                         <Route path = '/test'
                             render = {
                                 (props) => (<Test authenticated = {this.state.authenticated} {...props}/>)
+                            }
+                        />
+                        <Route path = '/privacy'
+                            render = {
+                                (props) => (<Privacy {...props}/>)
+                            }
+                        />
+                        <Route path = '/about'
+                            render = {
+                                (props) => (<About {...props}/>)
                             }
                         />
                     </div>
