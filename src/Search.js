@@ -63,22 +63,30 @@ export default class Grades extends React.Component {
         if (authed === true) {
             if (this.state.display_courses === false) {
                 return (
-                    <form onSubmit = {this.search} autoComplete = 'off'>
-                        <input type = 'text' name = 'course' placeholder = 'SUBJ 1234'></input>
-                        <input type = 'text' name = 'term' placeholder = '202010'></input>
-                        <input type = 'submit' value = 'search'></input>
-                    </form>
+                    <div>
+                        <div className = 'heading'>Home</div>
+                        <div className = 'section'>
+                            <form onSubmit = {this.search} autoComplete = 'off'>
+                                <input type = 'text' name = 'course' placeholder = 'SUBJ 1234'></input>
+                                <input type = 'text' name = 'term' placeholder = '202010'></input>
+                                <input type = 'submit' value = 'search'></input>
+                            </form>
+                        </div>
+                    </div>
                 );
             } else {
                 return (
                     <div>
-                        <button onClick = {this.back}>back</button>
-                        <p>{this.state.data}</p>
+                        <div className = 'heading'>Home</div>
+                        <div className = 'section'>
+                            <button onClick = {this.back}>back</button>
+                            <p>{this.state.data}</p>
+                        </div>
                     </div>
                 );
             }
         } else {
-            return <p>grades, you aint authenticated</p>;
+            return <p>search, you aint authenticated</p>;
         }
     }
 }

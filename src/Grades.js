@@ -61,7 +61,13 @@ class Grades extends React.Component {
             let data = this.state.data;
 
             return (
-                <div><p>grades '{cookie}'</p><p>{data}</p></div>
+                <div>
+                    <div className = 'heading'>Grades</div>
+                    <div className = 'section'>
+                        <p>current cookie: {cookie}</p><br />
+                        <p>{data}</p>
+                    </div>
+                </div>
             );
         } else {
             return <p>grades, you aint authenticated</p>;

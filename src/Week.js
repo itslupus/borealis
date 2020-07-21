@@ -6,7 +6,12 @@ export default class Week extends React.Component {
 
         if (authed === true) {
             return (
-                <p>this is week view</p>
+                <div>
+                    <div className = 'heading'>Week</div>
+                    <div className = 'section'>
+                        <p>week data goes here</p>
+                    </div>
+                </div>
             );
         } else {
             return <p>week, you aint authenticated</p>;

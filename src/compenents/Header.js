@@ -13,11 +13,13 @@ export default class Header extends React.Component {
             return (
                 <header>
                     {brand}
-                    <div className = 'inline nav-links'>
+                    <div className = 'inline'>
                         <Link className = 'link' to = '/'>HOME</Link>
                         <Link className = 'link' to = 'week'>WEEK</Link>
                         <Link className = 'link' to = 'grades'>GRADES</Link>
                         <Link className = 'link' to = 'search'>SEARCH</Link>
+                    </div>
+                    <div className = 'inline float-right'>
                         <Link className = 'link' to = 'logout'>[LOGOUT]</Link>
                         <Link className = 'link' to = 'test'>[TEST]</Link>
                     </div>

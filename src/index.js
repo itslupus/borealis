@@ -55,7 +55,7 @@ class App extends React.Component {
                     <div className = 'app'>
                         <Route exact path = '/'
                             render = {
-                                (props) => (<Welcome authenticated = {this.state.authenticated} login_handler = {this.login_handler} {...props}/>)
+                                (props) => (<Welcome authenticated = {this.state.authenticated} set_auth_state = {this.set_auth_state} {...props}/>)
                             }
                         />
                         <Route path = '/home'

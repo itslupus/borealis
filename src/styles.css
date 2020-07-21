@@ -1,3 +1,7 @@
+:root {
+    --background: rgba(0, 0, 0, 0.1);
+}
+
 * {
     padding: 0;
     margin: 0;
@@ -23,7 +27,7 @@ html {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--background);
 }
 
 /* =========================
@@ -35,11 +39,11 @@ header {
     position: fixed;
     width: 100%;
     background-color: rgb(34, 34, 34);
-    padding: 1rem 0 1rem 0;
+    padding: 1rem 4rem 1rem 4rem;
 }
 
-header .nav-links {
-    margin-right: 1rem;
+header .float-right {
+    margin-right: 8rem;
     float: right;
 }
 
@@ -59,19 +63,14 @@ header a:hover {
     color: rgb(255, 255, 255);
 }
 
-header .brand {
-    padding-left: 1rem;
-    font-weight: bold;
-}
-
 /* =========================
         MAIN APP
 ========================= */
 .app {
-    margin-top: 3rem;
+    margin: 6rem 0 3rem 0;
     position: relative;
     flex: 1 0 auto;
-    padding: 1rem;
+    padding: 0 4rem 0 4rem;
 }
 
 .link {
@@ -105,11 +104,22 @@ input[type = 'password']:focus {
     border-bottom: 2px solid white;
 }
 
+.heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.section {
+    padding: 0.75rem 1rem 0.75rem 1rem;
+    background-color: rgb(54, 54, 54);
+}
+
 /* =========================
         FOOTER
 ========================= */
 footer {
-    padding: 2rem 1rem 1rem 1rem;
+    font-size: 0.95rem;
+    padding: 2rem 4rem 1rem 4rem;
 }
 
 footer * {

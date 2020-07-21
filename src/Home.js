@@ -57,7 +57,13 @@ class Home extends React.Component {
             let data = this.state.data;
 
             return (
-                <div><p>home '{cookie}'</p><p>{data}</p></div>
+                <div>
+                    <div className = 'heading'>Home</div>
+                    <div className = 'section'>
+                        <p>current cookie: {cookie}</p><br />
+                        <p>{data}</p>
+                    </div>
+                </div>
             );
         } else {
             return <p>home, you aint authenticated</p>;
