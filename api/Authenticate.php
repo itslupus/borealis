@@ -69,10 +69,8 @@
         if ($response_size < 500) {
             $user = $sql->get_user($_POST['id']);
             if ($user === false) {
-                error_log('create new user', 4);
                 $sql->insert_new_user($_POST['id']);
             } else {
-                error_log('update user', 4);
                 $sql->update_user_last_login($_POST['id'], time());
             }
 
