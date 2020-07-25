@@ -1,0 +1,19 @@
+<?php
+    return [
+        'main_url' => 'https://aurora.umanitoba.ca',
+        
+        'tmp_directory' => 'tmp',
+        'tmp_prefix' => 'borealis',
+
+        'database_method' => 'sqlite',
+        'sqlite' => [
+            'file' => './sqlite.db'
+        ],
+        'mysql' => [
+            'host' => '',
+            'username' => '',
+            'password' => '',
+            'table' => ''
+        ]
+    ];
+?>
