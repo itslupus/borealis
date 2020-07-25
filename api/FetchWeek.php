@@ -17,40 +17,32 @@
         die();
     }
 
-    $manager = null;
-    $config = null;
+    $manager = new MrManager();
+    $config = $manager->get_config();
     $token = null;
 
     try {
-        $manager = new MrManager();
-
-        $config = $manager->get_config();
-
         $token = $manager->validate_token($_COOKIE['token']);
         $token = $manager->regenerate_token($token);
 
         $manager->validate_banner_session($token);
         $manager->set_token_cookie($token);
-    } catch (MrManagerInvalidConfig $e) {
-        // 500 internal server error
-        http_response_code(500);
-        die();
-    } catch (MrManagerInvalidToken $e2) {
+    } catch (MrManagerInvalidToken $e) {
         // 401 unauth
         http_response_code(401);
         die('invalid token');
-    } catch (MrManagerInvalidBannerSession $e3) {
+    } catch (MrManagerInvalidBannerSession $e2) {
         // 401 unauth
         http_response_code(401);
         die('invalid banner');
-    } catch (MrManagerExpiredToken $e4) {
+    } catch (MrManagerExpiredToken $e3) {
         // 401 unauth
         http_response_code(401);
         die('expired token');
     }
     
     //TODO: un-hardcode cookie path
-    $main_url = $config['general']['main_url'];
+    $main_url = $config['main_url'];
     $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
     
     $post_params = array('term_in' => $_POST['term']);

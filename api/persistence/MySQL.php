@@ -6,12 +6,7 @@
     class MySQL implements IDatabase {
         private $db;
 
-        public function __construct($config) {
-            $host = $config['sql']['host'];
-            $tbl_name = $config['sql']['table'];
-            $username = $config['sql']['username'];
-            $password = $config['sql']['password'];
-
+        public function __construct($host, $username, $password, $tbl_name) {
             $this->db = new PDO("mysql:host=$host;dbname=$tbl_name", $username, $password);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

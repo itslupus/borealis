@@ -4,7 +4,7 @@
         private $tmp_file_path;
         private $curl;
 
-        public function __construct($main_url, $tmp_file_path) {
+        public function __construct($main_url, $tmp_file_path, $user_agent) {
             $this->main_url = $main_url;
             $this->tmp_file_path = $tmp_file_path;
 
@@ -13,7 +13,7 @@
             curl_setopt($this->curl, CURLOPT_COOKIEJAR, $this->tmp_file_path);
             curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->tmp_file_path);
             curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($this->curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246');
+            curl_setopt($this->curl, CURLOPT_USERAGENT, $user_agent);
         }
 
         public function set_post($data) {

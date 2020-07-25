@@ -33,17 +33,8 @@
         die();
     }
 
-    $manager = null;
-    $config = null;
-
-    try {
-        $manager = new MrManager();
-        $config = $manager->get_config();
-    } catch (MrManagerInvalidConfig $e) {
-        // 500 internal server error
-        http_response_code(500);
-        die();
-    }
+    $manager = new MrManager();
+    $config = $manager->get_config();
 
     //FIXME: this doesnt work, also 400 might be better suited vs 403
     if (!is_numeric($_POST['id']) || !strlen($_POST['id']) === 7) {
@@ -57,9 +48,10 @@
     $tmp_file_name = explode('/', $tmp_file_path);
     $tmp_file_name = end($tmp_file_name);
 
-    $main_url = $config['general']['main_url'];
+    $main_url = $config['main_url'];
+    $user_agent = $config['user_agent'];
 
-    $curl = new CURL($main_url, $tmp_file_path);
+    $curl = new CURL($main_url, $tmp_file_path, $user_agent);
 
     $curl->get_page('/banprod/twbkwbis.P_WWWLogin');
 
@@ -72,7 +64,7 @@
     $new_token = null;
     $sql = null;
     try {
-        $sql = new MySQL($config);
+        $sql = $manager->generate_sql_connection();
 
         if ($response_size < 500) {
             $user = $sql->get_user($_POST['id']);
