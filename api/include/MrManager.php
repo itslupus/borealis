@@ -17,10 +17,13 @@
         }
 
         public function generate_tmp_file() {
-            //TODO: un-hardcode this
-            // $tmp_folder = $this->config_data['general']['tmp_directory'];
+            $tmp_folder = $this->config_data['tmp_directory'];
+
+            if (!file_exists($tmp_folder))
+                mkdir($tmp_folder, 0775, true);
+
             $tmp_prefix = $this->config_data['tmp_prefix'];
-            $tmp_file_path = tempnam($_SERVER['DOCUMENT_ROOT'] . '/api/tmp', $tmp_prefix . '-');
+            $tmp_file_path = tempnam($tmp_folder, $tmp_prefix . '-');
 
             return $tmp_file_path;
         }
@@ -40,6 +43,14 @@
             }
         }
 
+        public function get_curl_object($tmp_file) {
+            $main_url = $this->config_data['main_url'];
+            $tmp_path = $this->config_data['tmp_directory'] . $tmp_file;
+            $user_agent = $this->config_data['user_agent'];
+
+            return new CURL($main_url, $tmp_path, $user_agent);
+        }
+
         public function validate_token(string $token) {
             $token = $this->generate_sql_connection()->get_token_by_token($token);
 
@@ -56,12 +67,7 @@
 
         public function validate_banner_session(Token $token) {
             if ($token->get_tmp_file_name() !== NULL) {
-                //TODO: un-hardcode cookie file
-                $main_url = $this->config_data['main_url'];
-                $session_file = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
-                $user_agent = $this->config_data['user_agent'];
-
-                $curl = new CURL($main_url, $session_file, $user_agent);
+                $curl = $this->get_curl_object($token->get_tmp_file_name());
                 $response = $curl->get_page('/banprod/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu');
 
                 $page = new Page($response);

@@ -62,12 +62,7 @@
         die('expired token');
     }
     
-    //TODO: un-hardcode cookie path
-    $main_url = $config['main_url'];
-    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
-    $user_agent = $config['user_agent'];
-
-    $curl = new CURL($main_url, $tmp_file_path, $user_agent);
+    $curl = $manager->get_curl_object($token->get_tmp_file_name());
     $response = $curl->get_page('/banprod/bwskoacc.P_ViewAcct_disp');
 
     $page = new Page($response);

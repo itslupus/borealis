@@ -41,10 +41,7 @@
         die('expired token');
     }
     
-    //TODO: un-hardcode cookie path
-    $main_url = $config['main_url'];
-    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
-    
+    $curl = $mrmanager->get_curl_object($token->get_tmp_file_name());
     $post_params = array('term_in' => $_POST['term']);
     $curl->set_post($post_params);
     $response = $curl->get_page('/banprod/bwskfshd.P_CrseSchdDetl');

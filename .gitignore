@@ -1,6 +1,6 @@
 /api/_config.php
-/api/tmp
-/api/*.db
+tmp
+sqlite.db
 
 /node_modules
 /.pnp

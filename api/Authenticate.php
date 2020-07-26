@@ -47,10 +47,7 @@
     $tmp_file_name = explode('/', $tmp_file_path);
     $tmp_file_name = end($tmp_file_name);
 
-    $main_url = $config['main_url'];
-    $user_agent = $config['user_agent'];
-
-    $curl = new CURL($main_url, $tmp_file_path, $user_agent);
+    $curl = $manager->get_curl_object($tmp_file_name);
 
     $curl->get_page('/banprod/twbkwbis.P_WWWLogin');
 
@@ -80,8 +77,7 @@
 
             $token = $sql->get_token_by_id($_POST['id']);
             if ($token !== false) {
-                //TODO: un-hardcode this
-                unlink($_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name());
+                unlink($config['tmp_directory'] . $token->get_tmp_file_name());
                 $sql->delete_token($_POST['id']);
             }
 
@@ -92,8 +88,7 @@
             // destroy the object, it holds a lock to our cookie file
             $curl = null;
 
-            //TODO: un-hardcode this
-            unlink($_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $tmp_file_name);
+            unlink($config['tmp_directory'] . $tmp_file_name);
 
             // 200 but json error?
             http_response_code(200);

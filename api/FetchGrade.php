@@ -95,13 +95,7 @@
         die('expired token');
     }
     
-    //TODO: un-hardcode cookie path
-    $main_url = $config['main_url'];
-    $tmp_path = $_SERVER['DOCUMENT_ROOT'] . '/api/tmp/' . $token->get_tmp_file_name();
-    $user_agent = $config['user_agent'];
-
-    $curl = new CURL($main_url, $tmp_path, $user_agent);
-
+    $curl = $mrmanager->get_curl_object($token->get_tmp_file_name());
     $curl->set_post(array('term_in' => $_POST['term']));
     $result = $curl->get_page('/banprod/bwskogrd.P_ViewGrde');
 
