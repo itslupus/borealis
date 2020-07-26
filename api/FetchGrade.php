@@ -95,7 +95,7 @@
         die('expired token');
     }
     
-    $curl = $mrmanager->get_curl_object($token->get_tmp_file_name());
+    $curl = $manager->get_curl_object($token->get_tmp_file_name());
     $curl->set_post(array('term_in' => $_POST['term']));
     $result = $curl->get_page('/banprod/bwskogrd.P_ViewGrde');
 
