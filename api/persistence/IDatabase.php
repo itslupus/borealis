@@ -9,7 +9,7 @@
 
         function update_user_last_login(int $id);
 
-        function set_token_token(int $id, string $token);
+        function update_token_token(int $id, string $token);
 
         function delete_token($id);
     }

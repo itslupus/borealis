@@ -12,7 +12,6 @@
     ||              status: int
     ||          }
     || ======================================================== */
-
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
 
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/MySQL.php');
@@ -73,7 +72,6 @@
             } else {
                 $sql->update_user_last_login($_POST['id'], time());
             }
-
 
             $new_token = new Token();
             $new_token->generate_token();

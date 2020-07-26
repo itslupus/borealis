@@ -1,11 +1,16 @@
 <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/MySQL.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/SQLite.php');
 
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
 
     class MrManager {
-        private $config_data = require_once($_SERVER['DOCUMENT_ROOT'] . '/api/_config.php');
+        private $config_data;
+
+        public function __construct() {
+            $this->config_data = require_once($_SERVER['DOCUMENT_ROOT'] . '/api/_config.php');
+        }
 
         public function get_config() {
             return $this->config_data;
@@ -21,14 +26,18 @@
         }
 
         public function generate_sql_connection() {
-            $sql = new MySQL(
-                $this->config_data['mysql']['host'],
-                $this->config_data['mysql']['username'],
-                $this->config_data['mysql']['password'],
-                $this->config_data['mysql']['table']
-            );
-
-            return $sql;
+            if ($this->config_data['database_method'] === 'mysql') {
+                return new MySQL(
+                    $this->config_data['mysql']['host'],
+                    $this->config_data['mysql']['username'],
+                    $this->config_data['mysql']['password'],
+                    $this->config_data['mysql']['table']
+                );
+            } else {
+                return new SQLite(
+                    $this->config_data['sqlite']['file']
+                );
+            }
         }
 
         public function validate_token(string $token) {
@@ -66,7 +75,7 @@
 
         public function regenerate_token(Token $token) {
             $token->generate_token();
-            $this->generate_sql_connection()->set_token_token($token->get_user(), $token->get_token());
+            $this->generate_sql_connection()->update_token_token($token->get_user(), $token->get_token());
 
             return $token;
         }

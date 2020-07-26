@@ -129,7 +129,7 @@
             $prepared->execute();
         }
 
-        function set_token_token(int $id, string $new_token) {
+        function update_token_token(int $id, string $new_token) {
             $query = 'UPDATE Tokens SET token = :token WHERE id = :id';
 
             $prepared = $this->db->prepare($query);
