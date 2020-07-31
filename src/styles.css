@@ -30,6 +30,15 @@ html {
     background-color: var(--background);
 }
 
+.vertical {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+}
+
 /* =========================
         HEADER
 ========================= */
