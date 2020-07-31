@@ -68,7 +68,7 @@
         public function validate_banner_session(Token $token) {
             if ($token->get_tmp_file_name() !== NULL) {
                 $curl = $this->get_curl_object($token->get_tmp_file_name());
-                $response = $curl->get_page('/banprod/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu');
+                $response = $curl->get_page('/banprod/bwskflib.P_SelDefTerm');
 
                 $page = new Page($response);
                 $result = $page->query('//form[contains(@name, "loginform")]');
