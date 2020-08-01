@@ -1,4 +1,23 @@
 <?php
+    /* ===========================================================
+    ||  [Fetches the courses from subjects that are currently listed in the term]
+    ||  PHP     7.2.24
+    || 
+    ||  POST    /api/FetchSubjectCourses.php
+    ||
+    ||  RETURN  {
+    ||              result: {
+    ||                  subjects: {
+    ||                      Computer Science: {
+    ||                          COMP 1010: COMP 1010 Introductory Computer Science 1 3.00CR,
+    ||                          ......
+    ||                      },
+    ||                      .......
+    ||                  }
+    ||              }
+    ||          }
+    || ======================================================== */
+    
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
 
     require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
@@ -11,7 +30,7 @@
         die();
     }
 
-    if (!isset($_COOKIE['token']) || !isset($_POST['term']) || !isset($_POST['subject'])) {
+    if (!isset($_COOKIE['token']) || !isset($_POST['term']) || !isset($_POST['subjects'])) {
         // 400 bad request
         http_response_code(400);
         die();
@@ -71,9 +90,9 @@
     );
 
     $data['sel_subj'] = array('dummy');
-    foreach ($_POST['subject'] as $subj) {
+    foreach ($_POST['subjects'] as $subj) {
         if ($subj != null && $subj != '' && strlen($subj) <= 4) {
-            array_push($subj, $subj_data);
+            array_push($data['sel_subj'], $subj);
         }
     }
 
@@ -83,7 +102,7 @@
     $curl->set_post($data);
     $result = $curl->get_page('/banprod/bwskfcls.P_GetCrse');
 
-    $page = new Page($response);
+    $page = new Page($result);
     $crse_tables = $page->query('//table[@class = "datadisplaytable"]');
 
     $display_subjs = array();
@@ -107,7 +126,7 @@
                 $subj_num = trim($course_info->item($k - 3)->textContent);
                 $course_code = $subj_code . ' ' . $subj_num;
 
-                $build_crses[$course_code] = $build_string;
+                $build_crses[$course_code] = trim($build_string);
 
                 $build_string = '';
             }
@@ -119,11 +138,9 @@
         $subj_name = trim($subj_info->item(1)->textContent);
         $display_subjs[$subj_name] = $build_crses;
     }
-        
-    $vm->query_data = $display_subjs;
 
     $result = array(
-        'result' => array('sections' => $sections)
+        'result' => array('subjects' => $display_subjs)
     );
 
     header('Content-Type: text/json');

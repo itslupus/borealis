@@ -8,7 +8,8 @@ export default class Test extends React.Component {
             search_text: '',
             timeout: 0,
             select_subjects: [],
-            fetch_subjects: []
+            fetch_subjects: [],
+            display_data: 'initial'
         }
 
         this.fetch = this.fetch.bind(this);
@@ -19,6 +20,39 @@ export default class Test extends React.Component {
 
     fetch(event) {
         event.preventDefault();
+
+        if (this.props.authenticated === true) {
+            this.setState({display_data: 'loading...'});
+
+            let post_data = new URLSearchParams();
+            post_data.append('term', 202090);
+            
+            for (let pair of this.state.fetch_subjects) {
+                post_data.append('subjects', pair[0]);
+            }
+    
+            fetch('api/FetchSubjectCourses.php', {
+                method: 'POST',
+                body: post_data
+            })
+            .then(response => {
+                // not 200 OK
+                if (response.ok === false)
+                    throw new Error('I told ya don\'t touch that darn thing.')
+    
+                return response.json();
+            })
+            .then(
+                (data) => {
+                    this.setState({display_data: JSON.stringify(data)});
+                },
+                (error) => {
+                    this.setState({display_data: 'network error'});
+                }
+            );
+        } else {
+            this.props.history.push('/');
+        }
     }
 
     search(event) {
@@ -224,7 +258,7 @@ export default class Test extends React.Component {
                         </form>
                     </div>
                     <div id = 'courses' style = {{border: '1px solid red', width: '100%'}}>
-                        <p>stuff</p>
+                        <p>{this.state.display_data}</p>
                     </div>
                 </div>
             </div>
