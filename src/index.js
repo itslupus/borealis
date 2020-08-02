@@ -13,8 +13,8 @@ import Logout from './Logout';
 
 import Test from './Test'
 
-import Header from './compenents/Header';
-import Footer from './compenents/Footer';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 import Privacy from './Privacy'
 import About from './About'
