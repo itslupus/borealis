@@ -123,6 +123,18 @@ input[type = 'password']:focus {
     background-color: rgb(54, 54, 54);
 }
 
+.dropdown-header {
+    background-color: orange;
+}
+
+.dropdown-content {
+    
+}
+
+.hidden {
+    display: none;
+}
+
 /* =========================
         FOOTER
 ========================= */

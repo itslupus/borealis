@@ -88,7 +88,7 @@
         'path' => '1',
         'SUB_BTN' => 'Course Search'
     );
-
+    
     $data['sel_subj'] = array('dummy');
     foreach ($_POST['subjects'] as $subj) {
         if ($subj != null && $subj != '' && strlen($subj) <= 4) {
