@@ -20,7 +20,7 @@
             $tmp_folder = $this->config_data['tmp_directory'];
 
             if (!file_exists($tmp_folder))
-                mkdir($tmp_folder, 0775, true);
+                mkdir($tmp_folder, 0700, true);
 
             $tmp_prefix = $this->config_data['tmp_prefix'];
             $tmp_file_path = tempnam($tmp_folder, $tmp_prefix . '-');
