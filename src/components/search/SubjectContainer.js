@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CourseContainer from './CourseContainer';
-import Dropdown from './Dropdown';
+import Dropdown from '../Dropdown';
 
 export default class SubjectContainer extends Dropdown {
     render() {

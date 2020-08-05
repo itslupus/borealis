@@ -1,6 +1,7 @@
 import React from 'react';
 
-import Dropdown from './Dropdown';
+import Dropdown from '../Dropdown';
+import CourseInfo from './CourseInfo';
 
 export default class CourseContainer extends Dropdown {
     constructor(props) {
@@ -37,7 +38,7 @@ export default class CourseContainer extends Dropdown {
             })
             .then(
                 (data) => {
-                    this.setState({data: JSON.stringify(data), status: 1});
+                    this.setState({data: data, status: 1});
                 },
                 (error) => {
                     this.setState({data: 'network error'});
@@ -47,13 +48,25 @@ export default class CourseContainer extends Dropdown {
     }
 
     render() {
+        let data = this.state.data;
+        if (this.state.status === 1)
+            data = data.result.sections;
+
         return (
             <div>
                 <div className = 'dropdown-header' onClick = {this.load}>
                     {this.props.name}
                 </div>
                 <div className = 'dropdown-content hidden'>
-                    {this.state.data}
+                    {   
+                        this.state.status === 1
+                            ? 
+                            Object.keys(data).map(key => {
+                                return <CourseInfo section = {key} data = {data[key]} />
+                            })
+                            :
+                            <p>{data}</p>
+                    }
                 </div>
             </div>
         )

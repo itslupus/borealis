@@ -1,7 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 
-import SubjectContainer from './components/SubjectContainer'
+import SubjectContainer from './components/search/SubjectContainer'
 
 class Search extends React.Component {
     constructor(props) {
