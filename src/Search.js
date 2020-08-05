@@ -257,7 +257,7 @@ class Search extends React.Component {
                         <div>
                             {
                                 this.state.fetch_subjects.map((pair) => {
-                                    return <p short = {pair[0]} onClick = {this.remove_subject}>{pair[1]}</p>;
+                                    return <div short = {pair[0]} onClick = {this.remove_subject} style = {{padding: '0.1rem', marginBottom: '2px', backgroundColor: 'pink'}}>[x] {pair[1]}</div>;
                                 })
                             }
                         </div><br />
