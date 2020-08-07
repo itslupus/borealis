@@ -12,7 +12,7 @@ class Search extends React.Component {
             timeout: 0,
             select_subjects: [],
             fetch_subjects: [],
-            status: 'waiting',
+            status: 'waiting for user',
             data: {}
         }
 
