@@ -1,15 +1,15 @@
 <?php
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/MySQL.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/persistence/SQLite.php');
+    require_once(__DIR__ . '/persistence/MySQL.php');
+    require_once(__DIR__ . '/persistence/SQLite.php');
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
+    require_once(__DIR__ . '/object/Token.php');
+    require_once(__DIR__ . '/object/CURL.php');
 
     class MrManager {
         private $config_data;
 
         public function __construct() {
-            $this->config_data = require_once($_SERVER['DOCUMENT_ROOT'] . '/api/_config.php');
+            $this->config_data = require_once(__DIR__ . '/_config.php');
         }
 
         public function get_config() {

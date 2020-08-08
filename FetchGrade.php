@@ -53,11 +53,11 @@
     ||          }
     || ======================================================== */
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/include/MrManager.php');
+    require_once(__DIR__ . '/include/MrManager.php');
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/CURL.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Page.php');
+    require_once(__DIR__ . '/object/CURL.php');
+    require_once(__DIR__ . '/object/Token.php');
+    require_once(__DIR__ . '/object/Page.php');
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         // 405 method not allowed

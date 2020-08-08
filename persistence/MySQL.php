@@ -1,7 +1,7 @@
 <?php
     require_once('IDatabase.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/User.php');
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/api/object/Token.php');
+    require_once(__DIR__ . '/object/User.php');
+    require_once(__DIR__ . '/object/Token.php');
 
     class MySQL implements IDatabase {
         private $db;
