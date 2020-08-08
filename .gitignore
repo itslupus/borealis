@@ -1,7 +1,3 @@
-/api/_config.php
-tmp
-sqlite.db
-
 /node_modules
 /.pnp
 .pnp.js
