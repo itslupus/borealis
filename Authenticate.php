@@ -3,7 +3,7 @@
     ||  [Authenticates the client with the banner software]
     ||  PHP     7.2.24
     || 
-    ||  POST    /api/Authenticate.php
+    ||  POST    /Authenticate.php
     ||
     ||  PARAMS  id: int
     ||          password: string

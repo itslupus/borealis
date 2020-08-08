@@ -3,7 +3,7 @@
     ||  [Fetches the courses from subjects that are currently listed in the term]
     ||  PHP     7.2.24
     || 
-    ||  POST    /api/FetchSubjectCourses.php
+    ||  POST    /FetchSubjectCourses.php
     ||
     ||  RETURN  {
     ||              result: {

@@ -3,7 +3,7 @@
     ||  [Fetches the last academic term's tuition totals]
     ||  PHP     7.2.24
     || 
-    ||  POST    /api/FetchAccSummary.php
+    ||  POST    /FetchAccSummary.php
     ||
     ||  RETURN  {
     ||              result: {

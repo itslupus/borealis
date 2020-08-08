@@ -3,7 +3,7 @@
     ||  [Fetches grades based on term, includes term and overall]
     ||  PHP     7.2.24
     || 
-    ||  POST    /api/FetchGrade.php
+    ||  POST    /FetchGrade.php
     ||
     ||  PARAMS  term: string
     ||
