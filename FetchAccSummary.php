@@ -5,25 +5,27 @@
     || 
     ||  POST    /FetchAccSummary.php
     ||
-    ||  RETURN  {
-    ||              result: {
-    ||                  balance: $1234.00
-    ||                  items: [
-    ||                      {
-    ||                          desc: 'Fac of Science Tuition'
-    ||                          charge: $1234.00
-    ||                          payment: <!>
-    ||                      },
-    ||                      ......
-    ||                  ]
+    || === NOTES =================================================
+    ||  The payment field in items[] is current unused
+    ||
+    || === RETURNS ===============================================
+    ||  Example return data:
+    ||
+    ||  {
+    ||      result: {
+    ||          balance: "$1234.00",
+    ||          items: [
+    ||              {
+    ||                  desc: "Fac of Science Tuition",
+    ||                  charge: "$500.00",
+    ||                  payment: ""
     ||              }
-    ||          }
+    ||          ]
+    ||      }
+    ||  }
     || ======================================================== */
 
     require_once(__DIR__ . '/include/MrManager.php');
-
-    require_once(__DIR__ . '/object/CURL.php');
-    require_once(__DIR__ . '/object/Token.php');
     require_once(__DIR__ . '/object/Page.php');
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -38,34 +40,10 @@
         die();
     }
 
-    $manager = new MrManager();
-    $config = $manager->get_config();
-    $token = null;
-
-    try {
-        $token = $manager->validate_token($_COOKIE['token']);
-        $token = $manager->regenerate_token($token);
-
-        $manager->validate_banner_session($token);
-        $manager->set_token_cookie($token);
-    } catch (MrManagerInvalidToken $e) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid token');
-    } catch (MrManagerInvalidBannerSession $e2) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid banner');
-    } catch (MrManagerExpiredToken $e3) {
-        // 401 unauth
-        http_response_code(401);
-        die('expired token');
-    }
+    $manager = new MrManager($_COOKIE['token']);
     
-    $curl = $manager->get_curl_object($token->get_tmp_file_name());
-    $response = $curl->get_page('/banprod/bwskoacc.P_ViewAcct_disp');
-
-    $page = new Page($response);
+    $page = $manager->get_page('/banprod/bwskoacc.P_ViewAcct_disp');
+    
     $table_rows = $page->query('//table[@class = "datadisplaytable"]/tr');
 
     $result = array(

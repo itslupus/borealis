@@ -1,8 +1,5 @@
 <?php
     require_once(__DIR__ . '/include/MrManager.php');
-
-    require_once(__DIR__ . '/object/CURL.php');
-    require_once(__DIR__ . '/object/Token.php');
     require_once(__DIR__ . '/object/Page.php');
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -17,34 +14,10 @@
         die();
     }
 
-    $manager = new MrManager();
-    $config = $manager->get_config();
-    $token = null;
+    $manager = new MrManager($_COOKIE['token']);
 
-    try {
-        $token = $manager->validate_token($_COOKIE['token']);
-        $token = $manager->regenerate_token($token);
-
-        $manager->validate_banner_session($token);
-        $manager->set_token_cookie($token);
-    } catch (MrManagerInvalidToken $e) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid token');
-    } catch (MrManagerInvalidBannerSession $e2) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid banner');
-    } catch (MrManagerExpiredToken $e3) {
-        // 401 unauth
-        http_response_code(401);
-        die('expired token');
-    }
-    
-    $curl = $manager->get_curl_object($token->get_tmp_file_name());
     $post_params = array('term_in' => $_POST['term']);
-    $curl->set_post($post_params);
-    $response = $curl->get_page('/banprod/bwskfshd.P_CrseSchdDetl');
+    $page = $manager->get_page('/banprod/bwskfshd.P_CrseSchdDetl', $post_params);
         
     // get the datadisplaytable
     $crse_page = new Page($response);

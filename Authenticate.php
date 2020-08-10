@@ -5,13 +5,25 @@
     || 
     ||  POST    /Authenticate.php
     ||
-    ||  PARAMS  id: int
-    ||          password: string
+    || === PARAMETERS ============================================
+    ||  id
+    ||  - the 7 digit student number without any leading zeros
+    ||  - eg.
+    ||      term = "1234567"
     ||
-    ||  RETURN  {
-    ||              status: int
-    ||          }
+    ||  password
+    ||  - the password
+    ||  - eg.
+    ||      password = "hunter2"
+    ||
+    || === RETURNS ===============================================
+    ||  Example return data:
+    ||
+    ||  {
+    ||      status: 0
+    ||  }
     || ======================================================== */
+
     require_once(__DIR__ . '/include/MrManager.php');
 
     require_once(__DIR__ . '/persistence/MySQL.php');
@@ -43,11 +55,7 @@
     }
 
     $tmp_file_path = $manager->generate_tmp_file();
-
-    $tmp_file_name = explode('/', $tmp_file_path);
-    $tmp_file_name = end($tmp_file_name);
-
-    $curl = $manager->get_curl_object($tmp_file_name);
+    $curl = new CURL($config['main_url'], $tmp_file_path, $config['user_agent']);
 
     $curl->get_page('/banprod/twbkwbis.P_WWWLogin');
 
@@ -69,6 +77,9 @@
             } else {
                 $sql->update_user_last_login($_POST['id'], time());
             }
+
+            $tmp_file_name = explode('/', $tmp_file_path);
+            $tmp_file_name = end($tmp_file_name);
 
             $new_token = new Token();
             $new_token->generate_token();

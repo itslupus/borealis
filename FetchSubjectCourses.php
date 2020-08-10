@@ -5,23 +5,36 @@
     || 
     ||  POST    /FetchSubjectCourses.php
     ||
-    ||  RETURN  {
-    ||              result: {
-    ||                  subjects: {
-    ||                      Computer Science: {
-    ||                          COMP 1010: COMP 1010 Introductory Computer Science 1 3.00CR,
-    ||                          ......
-    ||                      },
-    ||                      .......
-    ||                  }
+    || === PARAMETERS ============================================
+    ||  term
+    ||  - the term to query the currently offered courses
+    ||  - eg.
+    ||      term = "202090"
+    ||
+    ||  subjects
+    ||  - an array of subjects to serch
+    ||  - eg.
+    ||      subjects[] = "COMP"
+    ||      subjects[] = "CHEM"
+    ||
+    || === RETURNS ===============================================
+    ||  Example return data:
+    ||
+    ||  {
+    ||      result: {
+    ||          subjects: {
+    ||              "Computer Science": {
+    ||                  "COMP 1010": "COMP 1010 Introductory Computer Science 1 3.00CR"
+    ||              },
+    ||              "Chemistry": {
+    ||                  "COMP 1300": "Whatever this course is called 3.00CR"
     ||              }
     ||          }
+    ||      }
+    ||  }
     || ======================================================== */
     
     require_once(__DIR__ . '/include/MrManager.php');
-
-    require_once(__DIR__ . '/object/CURL.php');
-    require_once(__DIR__ . '/object/Token.php');
     require_once(__DIR__ . '/object/Page.php');
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -36,32 +49,8 @@
         die();
     }
 
-    $manager = new MrManager();
-    $config = $manager->get_config();
-    $token = null;
-
-    try {
-        $token = $manager->validate_token($_COOKIE['token']);
-        $token = $manager->regenerate_token($token);
-
-        $manager->validate_banner_session($token);
-        $manager->set_token_cookie($token);
-    } catch (MrManagerInvalidToken $e) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid token');
-    } catch (MrManagerInvalidBannerSession $e2) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid banner');
-    } catch (MrManagerExpiredToken $e3) {
-        // 401 unauth
-        http_response_code(401);
-        die('expired token');
-    }
+    $manager = new MrManager($_COOKIE['token']);
     
-    $curl = $manager->get_curl_object($token->get_tmp_file_name());
-
     $data = array(
         'rsts' => 'dummy',
         'crn' => 'dummy',
@@ -99,10 +88,8 @@
     $data = http_build_query($data);
     $data = preg_replace('/\%5B[0-9]\%5D/', '', $data);
 
-    $curl->set_post($data);
-    $result = $curl->get_page('/banprod/bwskfcls.P_GetCrse');
-
-    $page = new Page($result);
+    $page = $manager->get_page('/banprod/bwskfcls.P_GetCrse', $data);
+    
     $crse_tables = $page->query('//table[@class = "datadisplaytable"]');
 
     $display_subjs = array();

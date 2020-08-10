@@ -5,58 +5,68 @@
     || 
     ||  POST    /FetchGrade.php
     ||
-    ||  PARAMS  term: string
+    || === NOTES =================================================
+    ||  The GPA data return will contain 4 groups:
+    ||  - the first group is TERM GPA
+    ||  - second is CUMULATIVE GPA
+    ||  - third is TRANSFERED GPA
+    ||  - fourth is TOTAL GPA
     ||
-    ||  RETURN  {
-    ||              result: {
-    ||                  grades: [
-    ||                      {
-    ||                          subj: COMP
-    ||                          course: 3010
-    ||                          section: A01
-    ||                          grade: A
-    ||                          hours: 3.00
-    ||                      },
-    ||                      ......
-    ||                  ],
-    ||                  gpa: [
-    ||                      {
-    ||                          attempt: 12.00
-    ||                          earned: 12.00
-    ||      [TERM GPA]          hours: 12.00
-    ||                          quality: 42.00
-    ||                          gpa: 4.00
-    ||                      },
-    ||                      {
-    ||                          attempt: 12.00
-    ||                          earned: 12.00
-    ||   [CUMULATIVE GPA]       hours: 12.00
-    ||                          quality: 42.00
-    ||                          gpa: 4.00
-    ||                      },
-    ||                      {
-    ||                          attempt: 12.00
-    ||                          earned: 12.00
-    ||    [TRANSFER GPA]        hours: 12.00
-    ||                          quality: 42.00
-    ||                          gpa: 4.00
-    ||                      },
-    ||                      {
-    ||                          attempt: 12.00
-    ||                          earned: 12.00
-    ||      [TOTAL GPA]         hours: 12.00
-    ||                          quality: 42.00
-    ||                          gpa: 4.00
-    ||                      }
-    ||                  ]
+    || === PARAMETERS ============================================
+    ||  term
+    ||  - the term to query for submitted grades
+    ||  - eg.
+    ||      term = "202090"
+    ||
+    || === RETURNS ===============================================
+    ||  Example return data:
+    ||
+    ||  {
+    ||      result: {
+    ||          grades: [
+    ||              {
+    ||                  subj: COMP,
+    ||                  course: 1010,
+    ||                  section: A01,
+    ||                  grade: A+,
+    ||                  hours: "3.00"
     ||              }
-    ||          }
+    ||          ],
+    ||          gpa: [
+    ||              {
+    ||                  attempt: "12.00",
+    ||                  earned: "12.00",
+    ||                  hours: "12.00",
+    ||                  quality: "12.00",
+    ||                  gpa: "4.00",
+    ||              },
+    ||              {
+    ||                  attempt: "12.00",
+    ||                  earned: "12.00",
+    ||                  hours: "12.00",
+    ||                  quality: "12.00",
+    ||                  gpa: "4.00",
+    ||              },
+    ||              {
+    ||                  attempt: "12.00",
+    ||                  earned: "12.00",
+    ||                  hours: "12.00",
+    ||                  quality: "12.00",
+    ||                  gpa: "4.00",
+    ||              },
+    ||              {
+    ||                  attempt: "12.00",
+    ||                  earned: "12.00",
+    ||                  hours: "12.00",
+    ||                  quality: "12.00",
+    ||                  gpa: "4.00",
+    ||              }
+    ||          ]
+    ||      }
+    ||  }
     || ======================================================== */
 
     require_once(__DIR__ . '/include/MrManager.php');
-
-    require_once(__DIR__ . '/object/CURL.php');
-    require_once(__DIR__ . '/object/Token.php');
     require_once(__DIR__ . '/object/Page.php');
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -71,35 +81,9 @@
         die();
     }
 
-    $manager = new MrManager();
-    $config = $manager->get_config();
-    $token = null;
-
-    try {
-        $token = $manager->validate_token($_COOKIE['token']);
-        $token = $manager->regenerate_token($token);
-
-        $manager->validate_banner_session($token);
-        $manager->set_token_cookie($token);
-    } catch (MrManagerInvalidToken $e) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid token');
-    } catch (MrManagerInvalidBannerSession $e2) {
-        // 401 unauth
-        http_response_code(401);
-        die('invalid banner');
-    } catch (MrManagerExpiredToken $e3) {
-        // 401 unauth
-        http_response_code(401);
-        die('expired token');
-    }
+    $manager = new MrManager($_COOKIE['token']);
     
-    $curl = $manager->get_curl_object($token->get_tmp_file_name());
-    $curl->set_post(array('term_in' => $_POST['term']));
-    $result = $curl->get_page('/banprod/bwskogrd.P_ViewGrde');
-
-    $page = new Page($result);
+    $page = $manager->get_page('/banprod/bwskogrd.P_ViewGrde', array('term_in' => $_POST['term']));
 
     $data_tables = $page->query('//table[@class = "datadisplaytable"]');
 
