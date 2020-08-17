@@ -78,7 +78,7 @@
 
     $manager = new MrManager($_COOKIE['token']);
     
-    $page = $manager->get_page('/banprod/bwskogrd.P_ViewGrde', array('term_in' => $_POST['term']));
+    $page = $manager->get_page('/banprod/bwskfshd.P_CrseSchdDetl', array('term_in' => $_POST['term']));
     $tables = $page->query('//div[@class = "pagebodydiv"]/table[@class = "datadisplaytable"]');
 
     $return_result = array(
