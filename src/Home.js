@@ -39,15 +39,15 @@ class Home extends React.Component {
         }
     }
 
-    componentDidUpdate(prev_props) {
-        if (this.props.location.key !== prev_props.location.key) {
-            this.fetch_data();
-        }
-    }
+    // componentDidUpdate(prev_props) {
+    //     if (this.props.location.key !== prev_props.location.key) {
+    //         this.fetch_data();
+    //     }
+    // }
 
-    componentDidMount() {
-        this.fetch_data();
-    }
+    // componentDidMount() {
+    //     this.fetch_data();
+    // }
 
     render() {
         let authed = this.props.authenticated;
@@ -56,15 +56,16 @@ class Home extends React.Component {
             let cookie = document.cookie;
             let data = this.state.data;
 
-            return (
-                <div>
-                    <div className = 'heading'>Home</div>
-                    <div className = 'section'>
-                        <p>current cookie: {cookie}</p><br />
-                        <p>{data}</p>
-                    </div>
-                </div>
-            );
+            // return (
+            //     <div>
+            //         <div className = 'heading'>Home</div>
+            //         <div className = 'section'>
+            //             <p>current cookie: {cookie}</p><br />
+            //             <p>{data}</p>
+            //         </div>
+            //     </div>
+            // );
+            return (<p>i have a theoretical degree in physics</p>)
         } else {
             return <p>home, you aint authenticated</p>;
         }
