@@ -23,12 +23,13 @@
     ||          waitlisted: {
     ||              "Introduction to Calculus - MATH 1500 - A01": {
     ||                  details: {
+    ||                      term: 'Fall 2020',
     ||                      crn: 12345,
     ||                      instr: "Person Name",
     ||                      credit: "3.000",
     ||                      wait_pos: "5"
     ||                  },
-    ||                  meets: {
+    ||                  meets: [
     ||                      {
     ||                          type: "On-Line Study",
     ||                          time: "TBA",
@@ -36,17 +37,18 @@
     ||                          location: "TBA",
     ||                          length: "May 07, 2018 - Aug 03, 2018"
     ||                      }
-    ||                  }
+    ||                  ]
     ||              },
     ||          },
-    ||          registered: {
+    ||          confirmed: {
     ||              "Introduction to Calculus - MATH 1500 - B02" : {
     ||                  details: {
+    ||                      term: 'Fall 2020',
     ||                      crn: 12345,
     ||                      instr: "Person Name",
     ||                      credit: "3.000"
     ||                  },
-    ||                  meets: {
+    ||                  meets: [
     ||                      {
     ||                          type: "Tutorial",
     ||                          time: "9:40 am - 10:29 am",
@@ -54,7 +56,7 @@
     ||                          location: "TIER 403",
     ||                          length: "May 07, 2018 - Aug 03, 2018"
     ||                      }
-    ||                  }
+    ||                  ]
     ||              }
     ||          }
     ||      }
@@ -110,6 +112,7 @@
 
         $is_waitlist = $course_info->length === 10;
         
+        $new_course['details']['term'] = trim($course_info->item(0)->textContent);
         $new_course['details']['crn'] = trim($course_info->item(1)->textContent);
         $new_course['details']['instr'] = trim($course_info->item($is_waitlist ? 5 : 3)->textContent);
         $new_course['details']['credit'] = trim($course_info->item($is_waitlist ? 7 : 5)->textContent);
@@ -131,9 +134,32 @@
         foreach ($course_time_rows as $row) {
             $columns = $page->query('.//td', $row);
 
+            $time_bounds = trim($columns->item(1)->textContent);
+            $bounds = explode(' - ', $time_bounds);
+
+            $new_time = [];
+
+            // easier to do this in a loop than just copy paste for both times
+            foreach ($bounds as $time) {
+                $split = explode(' ', $time);
+                $time_data = explode(':', $split[0]);
+
+                $minutes = 0;
+
+                if ($split[1] === 'pm' && $time_data[0] < 12) {
+                    $minutes = ($time_data[0] + 12) * 60;
+                } else {
+                    $minutes = $time_data[0] * 60;
+                }
+
+                $minutes = $minutes + $time_data[1];
+
+                array_push($new_time, $minutes);
+            }
+
             array_push($new_course['meets'], array(
                 'type' => trim($columns->item(0)->textContent),
-                'time' => trim($columns->item(1)->textContent),
+                'time' => join($new_time, ':'),
                 'days' => trim($columns->item(2)->textContent),
                 'location' => trim($columns->item(3)->textContent),
                 'length' => trim($columns->item(4)->textContent)
