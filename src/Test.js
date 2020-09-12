@@ -16,11 +16,17 @@ class GeneralCourse extends React.Component {
         return (
             <div>
                 <p>{this.props.name}</p>
-                {
-                    (this.props.waitlisted
-                        ? <p>waitlist position: {this.props.data['details']['wait_pos']}</p>
-                        : '')
-                }
+                <div style = {{marginLeft: '1rem'}}>
+                    <p>{this.props.data['meets'][0]['time']}</p>
+                    <p>{this.props.data['meets'][0]['days']}</p>
+                    <p>{this.props.data['meets'][0]['location']}</p>
+                    <p>{this.props.data['details']['instructor']}</p>
+                    {
+                        (this.props.waitlisted
+                            ? <p>waitlist position: {this.props.data['details']['wait_pos']}</p>
+                            : '')
+                    }
+                </div>
                 
             </div>
         )
