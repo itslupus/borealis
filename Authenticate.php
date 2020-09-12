@@ -31,6 +31,7 @@
     require_once(__DIR__ . '/object/CURL.php');
     require_once(__DIR__ . '/object/Token.php');
     require_once(__DIR__ . '/object/User.php');
+    require_once(__DIR__ . '/object/Page.php');
     
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         // 405 method not allowed
@@ -65,15 +66,32 @@
     $response = $curl->get_page('/banprod/twbkwbis.P_ValLogin');
     $response_size = $curl->get_downloaded_size();
     
+    $curl = null;
+
     $new_token = null;
     $sql = null;
     try {
         $sql = $manager->generate_sql_connection();
 
         if ($response_size < 500) {
+            //TODO: query [https://aurora.umanitoba.ca/banprod/bwskogrd.P_ViewTermGrde] and save the user's first academic term
+            //select[id = term_id]
+            //option[value = xxxxyy][text = TERM YEAR]
+            // ^ ordered most recent -> first term
+            
             $user = $sql->get_user($_POST['id']);
             if ($user === false) {
-                $sql->insert_new_user($_POST['id']);
+                $curl = new CURL($config['main_url'], $tmp_file_path, $config['user_agent']);
+                $response2 = $curl->get_page('/banprod/bwskogrd.P_ViewTermGrde');
+
+                $page = new Page($response2);
+
+                $options = $page->query('//option/@value');
+                header('Content-Type: text/plain');
+
+                $first_term = $options->item($options->length - 1)->value;
+
+                $sql->insert_new_user($_POST['id'], $first_term);
             } else {
                 $sql->update_user_last_login($_POST['id'], time());
             }

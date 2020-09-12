@@ -19,6 +19,7 @@
             $this->db->exec('
                 CREATE TABLE IF NOT EXISTS Users (
                     id INTEGER PRIMARY KEY,
+                    first_term INTEGER NOT NULL,
                     last_login INTEGER NOT NULL
                 )
             ');
@@ -45,7 +46,7 @@
 
             $result = $prepared->fetch(PDO::FETCH_ASSOC);
             if ($result !== false) {
-                return new User($result['id'], $result['last_login']);
+                return new User($result['id'], $result['last_login'], $result['first_term']);
             }
 
             return false;
@@ -92,11 +93,12 @@
             return false;
         }
 
-        function insert_new_user(int $id) {
-            $query = 'INSERT INTO Users VALUES (:id, :last_login)';
+        function insert_new_user(int $id, int $first_term) {
+            $query = 'INSERT INTO Users VALUES (:id, :first_term, :last_login)';
 
             $prepared = $this->db->prepare($query);
             $prepared->bindParam(':id', $id);
+            $prepared->bindParam(':first_term', $first_term);
             $prepared->bindValue(':last_login', time());
             $prepared->execute();
         }
