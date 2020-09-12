@@ -5,6 +5,7 @@ export default class Day extends React.Component {
         super(props);
 
         let tmp = this.props.data;
+        let parent_height = 5.5;
 
         Object.keys(tmp).forEach(course => {
             let meet = tmp[course];
@@ -17,8 +18,8 @@ export default class Day extends React.Component {
                 let course_max_hour = course_split[1] / 60;
                 let course_max_minute = course_split[1] % 60;
                 
-                meet.offset = (course_min_hour - table_hour) * 5 + 'rem';
-                meet.height = (course_max_hour - course_min_hour) * 5 + 'rem';
+                meet.offset = (course_min_hour - table_hour) * parent_height + 'rem';
+                meet.height = (course_max_hour - course_min_hour) * parent_height + 'rem';
                 meet.time = Math.floor(course_min_hour) + ':' + course_min_minute + ' - ' + Math.floor(course_max_hour) + ':' + course_max_minute;
             }
         });
@@ -36,7 +37,7 @@ export default class Day extends React.Component {
                     {
                         Object.keys(this.state.data).map(course => {
                             return (
-                                <div className = 'class' style = {{top: this.state.data[course]['offset'], height: this.state.data[course]['height']}}>
+                                <div className = 'class rounded' style = {{top: this.state.data[course]['offset'], height: this.state.data[course]['height']}}>
                                     {course.split(' - ')[1]}<br />
                                     {this.state.data[course]['time']}<br />
                                     {this.state.data[course]['location']}
