@@ -1,6 +1,6 @@
 <?php
     /* ===========================================================
-    ||  [Authenticates the client with the banner software]
+    ||  [Authenticates the client with the banner software and returns first term]
     ||  PHP     7.2.24
     || 
     ||  POST    /Authenticate.php
@@ -20,7 +20,7 @@
     ||  Example return data:
     ||
     ||  {
-    ||      status: 0
+    ||      first_term: 201790
     ||  }
     || ======================================================== */
 
@@ -80,6 +80,7 @@
             // ^ ordered most recent -> first term
             
             $user = $sql->get_user($_POST['id']);
+            $first_term;
             if ($user === false) {
                 $curl = new CURL($config['main_url'], $tmp_file_path, $config['user_agent']);
                 $response2 = $curl->get_page('/banprod/bwskogrd.P_ViewTermGrde');
@@ -87,13 +88,13 @@
                 $page = new Page($response2);
 
                 $options = $page->query('//option/@value');
-                header('Content-Type: text/plain');
 
                 $first_term = $options->item($options->length - 1)->value;
 
                 $sql->insert_new_user($_POST['id'], $first_term);
             } else {
                 $sql->update_user_last_login($_POST['id'], time());
+                $first_term = $user->get_first_term();
             }
 
             $tmp_file_name = explode('/', $tmp_file_path);
@@ -113,6 +114,9 @@
             $sql->insert_new_token($_POST['id'], $new_token);
 
             $manager->set_token_cookie($new_token);
+
+            http_response_code(200);
+            die(json_encode(array('first_term' => $first_term)));
         } else {
             // destroy the object, it holds a lock to our cookie file
             $curl = null;
@@ -128,7 +132,4 @@
         http_response_code(500);
         die();
     }
-
-    http_response_code(200);
-    die(json_encode(array('status' => 0)));
 ?>
