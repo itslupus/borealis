@@ -101,12 +101,13 @@
             return false;
         }
 
-        function insert_new_user(int $id, int $first_term) {
-            $query = 'INSERT INTO Users VALUES (:id, :first_term, :last_login)';
+        function insert_new_user(int $id, int $first_term, int $last_term) {
+            $query = 'INSERT INTO Users VALUES (:id, :first_term, :last_term, :last_login)';
 
             $prepared = $this->db->prepare($query);
             $prepared->bindParam(':id', $id);
             $prepared->bindParam(':first_term', $first_term);
+            $prepared->bindParam(':last_term', $last_term);
             $prepared->bindValue(':last_login', time());
             $prepared->execute();
         }
@@ -122,12 +123,13 @@
             $prepared->execute();
         }
 
-        function update_user_last_login(int $id) {
-            $query = 'UPDATE Users SET last_login = :last_login WHERE id = :id';
+        function update_user(int $id, int $last_term) {
+            $query = 'UPDATE Users SET last_login = :last_login, last_term = :last_term WHERE id = :id';
 
             $prepared = $this->db->prepare($query);
             $prepared->bindParam(':id', $id);
             $prepared->bindValue(':last_login', time());
+            $prepared->bindValue(':last_term', $last_term);
             $prepared->execute();
         }
 

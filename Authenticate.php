@@ -20,7 +20,11 @@
     ||  Example return data:
     ||
     ||  {
-    ||      first_term: 201790
+    ||      result: {
+    ||          status: 0,
+    ||          first_term: 201790,
+    ||          last_term: 202010
+    ||      }
     ||  }
     || ======================================================== */
 
@@ -49,52 +53,57 @@
     $config = $manager->get_config();
 
     //FIXME: this doesnt work, also 400 might be better suited vs 403
-    if (!is_numeric($_POST['id']) || !strlen($_POST['id']) === 7) {
-        // 403 forbidden
-        http_response_code(403);
-        die();
-    }
+    // if (!is_numeric($_POST['id']) || !strlen($_POST['id']) === 7) {
+    //     // 403 forbidden
+    //     http_response_code(403);
+    //     die();
+    // }
 
+    // create a new temporary file for cookies
     $tmp_file_path = $manager->generate_tmp_file();
     $curl = new CURL($config['main_url'], $tmp_file_path, $config['user_agent']);
 
+    // initialize aurora
     $curl->get_page('/banprod/twbkwbis.P_WWWLogin');
 
+    // set parameters
     $post_params = array('sid' => $_POST['id'], 'PIN' => $_POST['password']);
     $curl->set_post($post_params);
 
+    // login with said parameters
     $response = $curl->get_page('/banprod/twbkwbis.P_ValLogin');
     $response_size = $curl->get_downloaded_size();
     
+    // reset cURL instance (not sure why, i didnt comment it)
     $curl = null;
 
     $new_token = null;
     $sql = null;
     try {
+        // initialize database now that we have sucessful login
         $sql = $manager->generate_sql_connection();
 
         if ($response_size < 500) {
-            //TODO: query [https://aurora.umanitoba.ca/banprod/bwskogrd.P_ViewTermGrde] and save the user's first academic term
-            //select[id = term_id]
-            //option[value = xxxxyy][text = TERM YEAR]
-            // ^ ordered most recent -> first term
+            // get the page that has term by term account balances
+            // this page will first ask us to select term, use that info to discover first/latest academic term
+            $curl = new CURL($config['main_url'], $tmp_file_path, $config['user_agent']);
+            $response2 = $curl->get_page('/banprod/bwskogrd.P_ViewTermGrde');
+
+            $page = new Page($response2);
+
+            // get only the value attribute of the option elements
+            $options = $page->query('//option/@value');
+
+            // find terms, will be something like "201790"
+            $first_term = $options->item($options->length - 1)->value;
+            $last_term = $options->item(0)->value;
             
+            // select user from database based on student number
             $user = $sql->get_user($_POST['id']);
-            $first_term;
             if ($user === false) {
-                $curl = new CURL($config['main_url'], $tmp_file_path, $config['user_agent']);
-                $response2 = $curl->get_page('/banprod/bwskogrd.P_ViewTermGrde');
-
-                $page = new Page($response2);
-
-                $options = $page->query('//option/@value');
-
-                $first_term = $options->item($options->length - 1)->value;
-
-                $sql->insert_new_user($_POST['id'], $first_term);
+                $sql->insert_new_user($_POST['id'], $first_term, $last_term);
             } else {
-                $sql->update_user_last_login($_POST['id'], time());
-                $first_term = $user->get_first_term();
+                $sql->update_user($_POST['id'], $last_term);
             }
 
             $tmp_file_name = explode('/', $tmp_file_path);
@@ -116,7 +125,7 @@
             $manager->set_token_cookie($new_token);
 
             http_response_code(200);
-            die(json_encode(array('first_term' => $first_term)));
+            die(json_encode(array('result' => array(array('status' => 0, 'first_term' => $first_term, 'last_term' => $last_term)))));
         } else {
             // destroy the object, it holds a lock to our cookie file
             $curl = null;
@@ -125,7 +134,7 @@
 
             // 200 but json error?
             http_response_code(200);
-            die(json_encode(array('status' => 1)));
+            die(json_encode(array('result' => array(array('status' => 1)))));
         }
     } catch (PDOException $e) {
         // 500 internal server error
