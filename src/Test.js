@@ -83,11 +83,13 @@ class Test extends React.Component {
         let options = [];
 
         let first_term = window.sessionStorage.getItem('first_term');
+
         let year = Number(first_term.slice(0, 4));
         let month = Number(first_term.slice(-2));
 
+        // lets just stop after 20 iterations incase we encounter something broken
         let i = 0;
-        while (i++ < 5) {
+        while ('' + year + month != window.sessionStorage.getItem('last_term') && i++ < 20) {
             options.push(<option>{'' + year + month}</option>);
 
             let tmp = month + 40;
