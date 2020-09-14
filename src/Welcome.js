@@ -58,9 +58,12 @@ class Welcome extends React.Component {
         })
         .then(
             (data) => {
-                if (data.status === 1) {
+                if (data.result.status === 1) {
                     this.setState({state_text: 'wrong id/password'});
                 } else {
+                    window.sessionStorage.setItem('first_term', data.result.first_term);
+                    window.sessionStorage.setItem('last_term', data.result.last_term);
+                    
                     this.props.set_auth_state(true);
                     this.props.history.push('/home');
                 }

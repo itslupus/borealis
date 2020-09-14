@@ -27,7 +27,7 @@ html {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    height: 100%;
+    height: 100vh; /* stop changing this or document whenever i do */
     background-color: var(--background);
 }
 

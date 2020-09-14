@@ -79,17 +79,39 @@ class Test extends React.Component {
         return result;
     }
 
+    get_terms() {
+        let options = [];
+
+        let first_term = window.sessionStorage.getItem('first_term');
+        let year = Number(first_term.slice(0, 4));
+        let month = Number(first_term.slice(-2));
+
+        let i = 0;
+        while (i++ < 5) {
+            options.push(<option>{'' + year + month}</option>);
+
+            let tmp = month + 40;
+            month = tmp % 120;
+            year += Math.floor(tmp / 120);
+        }
+
+        return options;
+    }
+
     render() {
         return (
             <div>
-                <div className = 'heading'>test page</div>
+                <div className = 'heading vertical'>
+                    <p>test page</p>
+                    <select>
+                        {this.get_terms()}
+                    </select>
+                </div>
                 <div className = 'row'>
                     <div className = 'section'>
                         <b><p>week view</p></b><br />
                         <Timetable courses = {this.state.confirmed} time_bounds = {[this.state.min, this.state.max]}/>
-                        {
-                            this.render_hours()
-                        }
+                        {this.render_hours()}
                     </div>
                 </div>
                 <div className = 'row vertical'>
