@@ -63,7 +63,7 @@ class Welcome extends React.Component {
                 } else {
                     window.sessionStorage.setItem('first_term', data.result.first_term);
                     window.sessionStorage.setItem('last_term', data.result.last_term);
-                    
+
                     this.props.set_auth_state(true);
                     this.props.history.push('/home');
                 }
