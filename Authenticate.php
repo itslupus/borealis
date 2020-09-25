@@ -125,7 +125,14 @@
             $manager->set_token_cookie($new_token);
 
             http_response_code(200);
-            die(json_encode(array('result' => array(array('status' => 0, 'first_term' => $first_term, 'last_term' => $last_term)))));
+            $result = array(
+                'result' => array(
+                    'status' => 0,
+                    'first_term' => $first_term,
+                    'last_term' => $last_term
+                )
+            );
+            die(json_encode($result));
         } else {
             // destroy the object, it holds a lock to our cookie file
             $curl = null;
@@ -134,7 +141,12 @@
 
             // 200 but json error?
             http_response_code(200);
-            die(json_encode(array('result' => array(array('status' => 1)))));
+            $result = array(
+                'result' => array(
+                    'status' => 1
+                )
+            );
+            die(json_encode($result));
         }
     } catch (PDOException $e) {
         // 500 internal server error
