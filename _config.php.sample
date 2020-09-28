@@ -1,16 +1,45 @@
 <?php
     return [
+        // the main url for the banner instance
+        //
+        // default: 'https://aurora.umanitoba.ca'
         'main_url' => 'https://aurora.umanitoba.ca',
 
+        // the user agent to send along with headers
+        // note that some webservers may ignore blank user agents
+        //
+        // default: ''
+        // eg: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
         'user_agent' => '',
 
-        'tmp_directory' => '',
-        'tmp_prefix' => '',
+        // this is the directory where CURL stores cookie files, must include trailing backslash
+        // IMPORTANT: do not have this in a location accessible by users
+        //
+        // default: './'
+        // eg: '/home/webuser/tmp_folder/'
+        'tmp_directory' => './',
 
+        // the prefix to prepend to cookie files
+        //
+        // default: 'borealis'
+        'tmp_prefix' => 'borealis',
+
+        // which DBMS to use
+        // possible values are;
+        //      'sqlite'
+        //      'mysql'
+        //
+        // default: 'sqlite'
         'database_method' => 'sqlite',
+
+        // sqlite related settings
         'sqlite' => [
+            // the file for the database.
+            // IMPORTANT: do not have this in a location accessible by users
             'file' => './sqlite.db'
         ],
+        
+        // mysql related settings
         'mysql' => [
             'host' => '',
             'username' => '',

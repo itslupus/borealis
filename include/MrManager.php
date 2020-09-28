@@ -11,6 +11,10 @@
         private $curl = NULL;
 
         public function __construct($cookie = NULL) {
+            if (file_exists(__DIR__ . '/../_config.php') === false) {
+                copy(__DIR__ . '/../_config.php.sample', __DIR__ . '/../_config.php');
+            }
+
             $this->config_data = require_once(__DIR__ . '/../_config.php');
 
             if ($cookie !== NULL) {
