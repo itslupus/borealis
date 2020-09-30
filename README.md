@@ -22,7 +22,7 @@ It is important to change the `tmp_directory` entry (and `file` under `sqlite` i
 
 ## License
 
-This project is licensed under AGPLv3. Please review [the license](LICENSE) before using this software.
+This project is licensed under GNU AGPLv3. Please review [the license](LICENSE) before using this software.
 
 ## Contributing
 
