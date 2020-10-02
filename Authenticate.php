@@ -9,7 +9,7 @@
     ||  id
     ||  - the 7 digit student number without any leading zeros
     ||  - eg.
-    ||      term = "1234567"
+    ||      id = "1234567"
     ||
     ||  password
     ||  - the password
