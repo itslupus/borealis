@@ -1,5 +1,5 @@
 # bOrEaLiS
-This project is the frontend portion of a larger project. This project was used to learn ReactJS.
+This project is the frontend portion of a larger project. This frontend is the result of me learning ReactJS.
 ## Prereq
 This project requires the backend part of this project which can be found on my Github.
 ## Build  
