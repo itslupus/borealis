@@ -21,7 +21,7 @@ Borealis is comprised of two parts: the API and the frontend. The API is self co
 The API does not need to be compiled or built to be run. Simply dropping the API in the root along with the built frontend is enough. If you are running the API as it is (without a frontend) placing it in a location accessable by the public will work. With that being said, it is HIGHLY recommended to setup the configuration file beforehand.
 
 ### API Configuration File
-This project uses a configuration file. To setup this up, copy or rename `_config.php.sample` to `_config.php`.  
+The API uses a configuration file. To setup this up, copy or rename `_config.php.sample` to `_config.php`.  
 It is important to change the `tmp_directory` entry (and `file` under `sqlite` if using SQLite) to a directory that has restricted access or is not accessable by the world. Failure to do so will expose user tokens to the public.
 
 ### Frontend
