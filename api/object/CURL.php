@@ -24,8 +24,6 @@
             curl_setopt($this->curl, CURLOPT_URL, $this->main_url . $url);
             $result = curl_exec($this->curl);
 
-            error_log('DOWNLOADED ' . number_format($this->get_downloaded_size() / 1024.0, 2) . " KB\t" . $url, 4);
-
             return $result;
         }
 
