@@ -34,14 +34,12 @@ module.exports = class MongoDB {
      * 
      * @returns Promise of MongoDB insert result
      */
-    add_user(stu_num, ip_addr, session_id) {
+    upsert_user(stu_num, session_id) {
         const users = MongoDB.__db.collection('users');
 
         return users.insertOne({
             stu_num: stu_num,
-            ip_addr: ip_addr,
             session_id: session_id,
-            last_login: Date.now()
         });
     }
 
